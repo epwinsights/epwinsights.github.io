@@ -9,7 +9,7 @@
 EPW Insights is a web-based tool designed for visualizing and analyzing EnergyPlus Weather (EPW) data. It provides interactive charts and tables to explore various climate parameters, offering a comprehensive understanding of weather patterns for a given location. The application also includes a comparison feature, allowing users to analyze two EPW files side-by-side.
 
 ## 🌐 Live Demo
-Experience EPW Insights live at: [https://ehsan-rostami.github.io/epw-insights/](https://epwinsights.github.io/)
+Experience EPW Insights live at: [https://epwinsights.github.io/](https://epwinsights.github.io/)
 
 ## 📸 Screenshots
 Click on any image to view full size
