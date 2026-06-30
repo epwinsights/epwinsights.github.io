@@ -2,7 +2,6 @@
 **Advanced Weather Data Visualization & Analysis**
 
 [![license AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen.svg)](https://ehsan-rostami.github.io/epw-insights/)
 [![Made with D3.js](https://img.shields.io/badge/Made%20with-D3.js-F9A03C?style=flat&logo=d3.js&logoColor=white)](https://d3js.org/)
 [![Responsive](https://img.shields.io/badge/Responsive-Yes-brightgreen.svg)](https://getbootstrap.com/)
 
