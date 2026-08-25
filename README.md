@@ -1,7 +1,7 @@
 # EPW Insights
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0.html)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.0000000.svg)](https://doi.org/10.5281/zenodo.0000000)
+[![DOI](https://zenodo.org/badge/1030517205.svg)](https://doi.org/10.5281/zenodo.22102742)
 
 A free, browser-based tool for analyzing **EnergyPlus Weather (EPW)** files. Everything runs client-side. Files are parsed and analyzed locally in your browser, nothing is uploaded to a server.
 

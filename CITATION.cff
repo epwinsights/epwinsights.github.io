@@ -33,5 +33,5 @@ keywords:
   - climate change projection
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.0000000
-    description: "The DOI of this version of the software (update after first Zenodo release)."
+    value: 10.5281/zenodo.22102742
+    description: "Concept DOI, always resolves to the latest version."
