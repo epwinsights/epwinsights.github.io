@@ -28,15 +28,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: |
-          for i in 1 2 3; do
-            npm ci --include=dev && break
-            echo "npm ci failed, retrying ($i)..."
-            sleep 10
-          done
-
-      - name: Debug node_modules
-        run: ls node_modules/.bin | grep vite          
+        run: npm ci --include=dev --no-audit --no-fund --fetch-timeout=60000
 
       - name: Run tests
         run: npx vitest run
