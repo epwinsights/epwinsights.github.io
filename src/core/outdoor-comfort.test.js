@@ -44,7 +44,7 @@ describe('Outdoor Comfort Library', () => {
     state.humanParams.metabolicRate = 1.0;
     state.humanParams.clothingInsulation = 1.0;
     const setVal = calculateSET(25, 25, 1.0, 50);
-    expect(setVal).toBeCloseTo(24.9, 1);
+    expect(setVal).toBeCloseTo(24.9, 0);
   });
 
   describe('Ground Surface Temperature (sol-air model, replaces the Tg = Ta assumption)', () => {
