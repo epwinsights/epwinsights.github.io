@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="40" height="40">
+  <!-- Sun: full circle, ochre/amber tone -->
+  <circle cx="100" cy="78" r="46" fill="#CC8A12"/>
+
+  <!-- Bar chart: 4 rounded vertical bars intersecting the circle's base, Bootstrap primary blue -->
+  <g fill="#0d6efd">
+    <rect x="46"  y="138" width="20" height="46" rx="10"/>
+    <rect x="80"  y="110" width="20" height="74" rx="10"/>
+    <rect x="114" y="124" width="20" height="60" rx="10"/>
+    <rect x="148" y="96"  width="20" height="88" rx="10"/>
+  </g>
+</svg>

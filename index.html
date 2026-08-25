@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+/*
+ * EPW Insights
+ * Author: Ehsan Rostami (https://github.com/ehsan-rostami)
+ * Copyright (c) 2025-2026 Ehsan Rostami
+ * Released under the GNU Affero General Public License v3.0 or later.
+ */
+-->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EPW Insights - Advanced Weather Data Visualization & Bioclimatic Analysis</title>
+        <meta name="description" content="A powerful, browser-based climate analysis tool for architects and engineers. Parse EPW files locally to simulate psychrometric charts, outdoor comfort, thermal mass strategies, and future climate projections using CMIP6/IPCC AR6 morphing.">
+        <meta name="keywords" content="EPW Insights, EnergyPlus Weather, climate data visualization, psychrometric chart, outdoor comfort, bioclimatic architecture, building performance simulation, CMIP6 morphing, IPCC AR6, future weather file, climate change projection, SSP scenarios, Ehsan Rostami">
+        <meta name="author" content="Ehsan Rostami">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="https://epwinsights.github.io/">
+
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://epwinsights.github.io/">
+        <meta property="og:title" content="EPW Insights - Advanced Weather Data Visualization">
+        <meta property="og:description" content="Parse EPW files locally to simulate psychrometric charts, outdoor comfort, thermal mass strategies, and future climate projections (CMIP6/AR6 morphing) without server uploads.">
+        <meta property="og:image" content="https://epwinsights.github.io/public/img/og-preview.jpg">
+        <meta property="og:site_name" content="EPW Insights">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="https://epwinsights.github.io/">
+        <meta name="twitter:title" content="EPW Insights - Advanced Weather Data Visualization">
+        <meta name="twitter:description" content="Browser-based climate analysis tool for architects and engineers, now with CMIP6/AR6 future climate projections.">
+        <meta name="twitter:image" content="https://epwinsights.github.io/public/img/og-preview.jpg">
+
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <meta name="google-site-verification" content="KiQtemfQ9zucZgblw3IESSl-4bTe_P0Nr7YNuz1BSy4" />
+
+        <!-- Third-party Libraries -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+        <!-- Custom Stylesheet -->
+        <link rel="stylesheet" href="/src/style.css">
+
+        <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "@id": "https://epwinsights.github.io/#webapp",
+        "url": "https://epwinsights.github.io/",
+        "name": "EPW Insights",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires HTML5 and JavaScript. Optimized for modern desktop browsers.",
+        "description": "An advanced browser-based climate analysis tool for architects and engineers. Parse EnergyPlus Weather (EPW) files locally to simulate psychrometric charts, outdoor comfort, thermal mass strategies, and future climate projections using the CMIP6/IPCC AR6 morphing method.",
+        "keywords": "EnergyPlus Weather, EPW, psychrometric chart, outdoor comfort, bioclimatic architecture, CMIP6, IPCC AR6, climate change projection, SSP scenarios",
+        "version": "1.0.0",
+        "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+        "codeRepository": "https://github.com/epwinsights/epwinsights.github.io",
+        "author": {
+            "@type": "Person",
+            "name": "Ehsan Rostami",
+            "url": "https://github.com/ehsan-rostami"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+        }
+        </script>
+
+        <!-- Cloudflare Web Analytics -->
+        <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "60bac22d1e95407faa306d4381d0baea"}'></script>
+        <!-- End Cloudflare Web Analytics -->
+    </head>
+    <body>
+    <div id="global-processing-overlay" class="global-processing-overlay">
+        <div class="modern-spinner"></div>
+    </div>
+    <header class="py-4 mb-4 border-bottom bg-white shadow-sm">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <a href="/" class="brand-link d-flex align-items-center text-decoration-none">
+                    <img src="/img/logo.svg" alt="EPW Insights Logo" class="me-2" style="height: 40px; width: auto;">
+                    <div>
+                        <div class="d-flex align-items-baseline">
+                            <h1 class="h4 mb-0 fw-semibold text-dark brand-title">EPW Insights</h1>
+                            <span class="text-muted font-monospace ms-2" style="font-size: 0.8rem; opacity: 0.7;">v1.0.0</span>
+                        </div>
+                        <p class="text-muted small mb-0 mt-0.5" style="font-size: 0.85rem; letter-spacing: 0.2px;">Advanced Weather Data Visualization & Analysis</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="d-flex align-items-center header-actions-container">
+                <a href="https://github.com/epwinsights/epwinsights.github.io" target="_blank" class="header-action-link">
+                    <i class="bi bi-github"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="https://github.com/epwinsights/epwinsights.github.io/issues" target="_blank" class="header-action-link">
+                    <i class="bi bi-chat-text"></i>
+                    <span>Feedback</span>
+                </a>
+                <button class="header-action-link" data-bs-toggle="modal" data-bs-target="#release-notes-modal" id="init-release-notes-btn">
+                    <i class="bi bi-megaphone"></i>
+                    <span>What's New</span>
+                </button>
+                <button class="header-action-link" data-bs-toggle="modal" data-bs-target="#help-modal" id="init-help-btn">
+                    <i class="bi-journal-text"></i>
+                    <span>Docs</span>
+                </button>
+                <button class="header-action-link" data-bs-toggle="modal" data-bs-target="#support-modal" id="open-support-btn">
+                    <i class="bi-heart"></i>
+                    <span>Support</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="modal fade" id="release-notes-modal" tabindex="-1" aria-labelledby="releaseNotesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 rounded-3 shadow">
+                <div class="modal-header bg-light border-bottom-1">
+                    <h5 class="modal-title fw-semibold text-dark" id="releaseNotesModalLabel">
+                        <i class="bi bi-megaphone me-2"></i>Release Notes & Updates
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="release-notes-modal-body"></div>
+                <div class="modal-footer bg-light border-top-0">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close Guide</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="support-modal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 rounded-3 shadow">
+                <div class="modal-header bg-light border-bottom-1">
+                    <h5 class="modal-title fw-semibold text-dark" id="supportModalLabel">
+                        <i class="bi-heart-fill text-danger me-2"></i>Support EPW Insights
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="support-modal-body"></div>
+                <div class="modal-footer bg-light border-top-0">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cite-modal" tabindex="-1" aria-labelledby="citeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-3 shadow">
+                <div class="modal-header bg-light border-bottom-1">
+                    <h5 class="modal-title fw-semibold text-dark" id="citeModalLabel">
+                        <i class="bi bi-journal-bookmark-fill text-primary me-2"></i>Citing EPW Insights
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p>A peer-reviewed article describing this software is currently in preparation. Until publication, please cite the software itself using the DOI below or the metadata in <code>CITATION.cff</code>.</p>
+                    <p class="mb-1"><strong>DOI:</strong> <a href="https://doi.org/10.5281/zenodo.0000000" target="_blank" rel="noopener noreferrer">10.5281/zenodo.0000000</a></p>
+                    <p class="mb-0"><a href="https://github.com/epwinsights/epwinsights.github.io/blob/main/CITATION.cff" target="_blank" rel="noopener noreferrer">View CITATION.cff</a></p>
+                    <hr>
+                    <p class="mb-0 small text-muted">This section will be updated with the full article citation upon publication.</p>
+                </div>
+                <div class="modal-footer bg-light border-top-0">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="help-modal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 rounded-3 shadow">
+                <div class="modal-header bg-light border-bottom-1">
+                    <h5 class="modal-title fw-semibold text-dark" id="helpModalLabel">
+                        <i class="bi bi-journal-text text-primary me-2"></i>EPW Insights User Guide
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="help-modal-body"></div>
+                <div class="modal-footer bg-light border-top-0">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close Guide</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="station-picker-modal" tabindex="-1" aria-labelledby="stationPickerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content border-0 rounded-3 shadow">
+                <div class="modal-header bg-light border-bottom-1">
+                    <h5 class="modal-title fw-semibold text-dark" id="stationPickerModalLabel">
+                        <i class="bi bi-geo-alt text-primary me-2"></i>Pick a Weather Station
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="p-3 border-bottom bg-white">
+                        <input type="text" id="station-search-input" class="form-control form-control-sm"
+                               placeholder="Search by city, station name, or 3-letter country code (e.g., Tehran, London, EGY)">
+                        <div class="form-text mt-1">
+                            Click a marker, then <strong>Download EPW</strong>. Your browser will download the file directly
+                            from the official EnergyPlus/DOE weather archive. Once it's downloaded, drop it into the
+                            <strong>Primary</strong> or <strong>Comparison</strong> file zone above.
+                        </div>
+                        <div class="form-text example-attribution mt-1">
+                            All example weather files are sourced from the official
+                            <a href="https://energyplus.net/weather" target="_blank" rel="noopener noreferrer" class="footer-text-link">EnergyPlus Weather Data</a>
+                            repository.
+                        </div>
+                    </div>
+                    <div id="station-picker-map-container" style="height: min(65vh, calc(100vh - 260px)); width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="example-picker-modal" tabindex="-1" aria-labelledby="examplePickerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content border-0 rounded-3 shadow">
+                <div class="modal-header bg-light border-bottom-1">
+                    <h5 class="modal-title fw-semibold text-dark" id="examplePickerModalLabel">
+                        <i class="bi bi-globe-americas text-primary me-2"></i>Explore Example Climates
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="p-3 border-bottom bg-white example-picker-controls">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-12 col-md-7">
+                                <input type="text" id="example-search-input" class="form-control form-control-sm"
+                                       placeholder="Search by city, country, or climate (e.g., desert, tropical, continental)">
+                            </div>
+                            <div class="col-12 col-md-5">
+                                <div class="example-slots d-flex align-items-center gap-2 justify-content-md-end">
+                                    <span class="example-slot" id="example-slot-primary">
+                                        <i class="bi bi-1-circle-fill"></i>
+                                        <span class="slot-label">Primary: <em>none</em></span>
+                                        <i class="bi bi-x-circle slot-clear" data-slot="primary" title="Clear"></i>
+                                    </span>
+                                    <span class="example-slot" id="example-slot-comparison">
+                                        <i class="bi bi-2-circle-fill"></i>
+                                        <span class="slot-label">Comparison: <em>none</em></span>
+                                        <i class="bi bi-x-circle slot-clear" data-slot="comparison" title="Clear"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-text mt-1">
+                            Click a card to set it as <strong>Primary</strong>, click another for an optional <strong>Comparison</strong>.
+                            Click a selected card again to deselect it.
+                        </div>
+                        <div class="form-text example-attribution mt-1">
+                            All example weather files are sourced from the official
+                            <a href="https://energyplus.net/weather" target="_blank" rel="noopener noreferrer" class="footer-text-link">EnergyPlus Weather Data</a>
+                            repository.
+                        </div>
+                    </div>
+                    <div id="example-cards-container" class="p-3">
+                        <div class="text-center text-muted py-5">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                            <span class="ms-2">Loading example climates...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-top-0">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="load-selected-examples-btn" disabled>
+                        <i class="bi bi-cloud-download me-1"></i>Load Selected
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- Mega Container 1: Weather File & Guide (Collapsible) -->
+        <div class="card mb-4 shadow-sm" id="mega-container-1">
+            <div class="card-header d-flex justify-content-between align-items-center bg-light py-3 main-collapsible-header" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#mega-container-1-body" aria-expanded="true">
+                <h6 class="mb-0 text-primary fw-semibold"><i class="bi bi-folder2-open me-2"></i>Weather File & Guide</h6>
+                <span class="collapse-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </span>
+            </div>
+            <div id="mega-container-1-body" class="collapse show">
+                <div class="card-body p-3 p-md-4">
+                    
+                    <!-- Compact Horizontal Guide (Replaces the tall right-side box) -->
+                    <div id="welcome-panel-container" class="mb-4 pb-3 border-bottom">
+                        <div id="notes-panel" class="bg-light p-3 rounded-3 border-0">
+                            <div class="row g-3 text-secondary notes-row">
+                                <div class="col-6 col-lg d-flex align-items-start gap-2">
+                                    <i class="bi bi-upload text-primary fs-6"></i>
+                                    <div><strong>Load EPW:</strong> Drag & drop a file, browse your device, or pick directly from the interactive map.</div>
+                                </div>
+                                <div class="col-6 col-lg d-flex align-items-start gap-2">
+                                    <i class="bi bi-files text-primary fs-6"></i>
+                                    <div><strong>Compare:</strong> Once your primary file loads, a second drop zone opens automatically.</div>
+                                </div>
+                                <div class="col-6 col-lg d-flex align-items-start gap-2">
+                                    <i class="bi bi-sliders text-primary fs-6"></i>
+                                    <div><strong>Filter Data:</strong> Use the dynamic sidebar controls within each analysis tab to customize charts.</div>
+                                </div>
+                                <div class="col-6 col-lg d-flex align-items-start gap-2">
+                                    <i class="bi bi-pencil-square text-primary fs-6"></i>
+                                    <div><strong>Edit Info:</strong> Click the edit icon in Location Summary to customize station names for reports.</div>
+                                </div>
+                                <div class="col-6 col-lg d-flex align-items-start gap-2">
+                                    <i class="bi bi-camera-fill text-primary fs-6"></i>
+                                    <div><strong>Export:</strong> Use the camera icon on any chart to download a publication-ready PNG.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Loading & Controls Section (Centrally Balanced) -->
+                    <section id="top-section" class="mb-0">
+                        <div class="file-input-panel">
+                            <div class="row g-3 align-items-stretch">
+                                <div class="col-12 col-lg-8">
+                                    <div class="input-zones-container d-flex gap-3 flex-column flex-md-row h-100">
+                                        <div class="drop-zone-wrapper flex-fill">
+                                            <div id="drop-zone" class="drop-zone-styling py-3 px-4 d-flex flex-row align-items-center justify-content-center gap-3">
+                                                <i class="bi bi-file-earmark-arrow-up text-primary fs-3"></i>
+                                                <div class="text-start">
+                                                    <div class="drop-zone-title mb-0 fw-semibold">Primary EPW File</div>
+                                                    <span class="drop-zone-subtext text-muted">Drag & drop here, or click to browse</span>
+                                                </div>
+                                            </div>
+                                            <input type="file" id="file-input-control" class="d-none" accept=".epw">
+                                            <div class="file-status-container mt-1">
+                                                <div id="primary-file-status" class="file-status-indicator status-inactive"></div>
+                                            </div>
+                                        </div>
+
+                                        <div id="comparison-drop-zone-wrapper" class="drop-zone-wrapper flex-fill inactive">
+                                            <div id="drop-zone-compare" class="drop-zone-styling py-3 px-4 d-flex flex-row align-items-center justify-content-center gap-3">
+                                                <i class="bi bi-file-earmark-diff text-secondary fs-3"></i>
+                                                <div class="text-start">
+                                                    <div class="drop-zone-title mb-0 fw-semibold">Comparison EPW File</div>
+                                                    <span class="drop-zone-subtext text-muted">Drag & drop here, or click to browse</span>
+                                                </div>
+                                            </div>
+                                            <input type="file" id="file-input-compare" class="d-none" accept=".epw">
+                                            <div class="file-status-container mt-1">
+                                                <div id="comparison-file-status" class="file-status-indicator status-inactive"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-lg-4">
+                                    <div class="side-controls-panel d-flex flex-column h-100 gap-2">
+                                        <button type="button" class="btn btn-outline-secondary flex-fill d-flex align-items-center justify-content-center gap-2 shadow-sm w-100"
+                                                data-bs-toggle="modal" data-bs-target="#example-picker-modal" id="open-example-picker-btn">
+                                            <i class="bi bi-globe-americas fs-5"></i> <span>Explore Example Climates</span>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary flex-fill d-flex align-items-center justify-content-center gap-2 shadow-sm w-100"
+                                                data-bs-toggle="modal" data-bs-target="#station-picker-modal" id="open-station-picker-btn">
+                                            <i class="bi bi-geo-alt-fill fs-5"></i> <span>Pick from Map</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="loading-indicator" class="mt-2" style="display: none;">
+                                <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                <span class="ms-2 fw-medium text-secondary">Parsing weather data...</span>
+                            </div>
+                            <div id="error-alert" class="alert alert-danger mt-3 py-2 mb-0 compact-alert" role="alert" style="display: none;"></div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <div id="visualization-container" class="visually-hidden">
+            <!-- Container 2: Location Summary & Map (Collapsible) -->
+            <div class="card mb-4 shadow-sm" id="location-summary-card">
+                <div class="card-header d-flex justify-content-between align-items-center bg-white py-3 main-collapsible-header" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#location-summary-collapse" aria-expanded="true">
+                    <h6 class="mb-0 text-primary fw-semibold">Location Summary</h6>
+                    <span class="collapse-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </span>
+                </div>
+                <div id="location-summary-collapse" class="collapse show">
+                    <div class="card-body p-3 position-relative">
+                        
+                        <section id="location-summary-section" class="h-100 mb-0" style="gap: 1.5rem; display: flex;">
+                            <div id="summary-editor-wrapper" style="flex: 2; min-width: 0;">
+                                <div id="summary-content"></div>
+
+                                <div id="location-editor-panel" class="p-3 bg-white rounded-3 border w-100" style="display: none;">
+                                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <h6 class="mb-0">Customize Location Names</h6>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-muted" style="cursor: help;" viewBox="0 0 16 16" data-bs-toggle="tooltip" data-bs-placement="right" title="EPW Insights automatically identifies location details from your files. If the displayed city or station name is inaccurate, you can correct it here. These modifications are solely for presentation in charts and exports and do not change the actual EPW file content.">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button id="cancel-editor-btn" type="button" class="btn btn-sm btn-outline-secondary">Cancel</button>
+                                            <button id="apply-editor-btn" type="button" class="btn btn-sm btn-primary">Apply</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="location-editor-grid">
+                                        <div></div>
+                                        <div class="grid-header">Primary File</div>
+                                        <div id="comparison-header" class="grid-header" style="display: none;">Comparison File</div>
+                                        
+                                        <label for="primary-city-input" class="form-label">City</label>
+                                        <input type="text" id="primary-city-input" class="form-control form-control-sm" placeholder="City Name">
+                                        <input type="text" id="comparison-city-input" class="form-control form-control-sm" placeholder="City Name" style="display: none;">
+                                    
+                                        <label for="primary-station-input" class="form-label">Station</label>
+                                        <input type="text" id="primary-station-input" class="form-control form-control-sm" placeholder="e.g., Intl Airport">
+                                        <input type="text" id="comparison-station-input" class="form-control form-control-sm" placeholder="e.g., Weather Center" style="display: none;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="map-wrapper" style="flex: 1; min-width: 0;">
+                                <div id="map-container"></div>
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs" id="viz-tabs" role="tablist">
+                <li class="nav-item" role="presentation"><button class="nav-link active" id="air-temp-tab" data-bs-toggle="tab" data-bs-target="#air-temp-pane" type="button"><i class="bi bi-thermometer-half me-2"></i>Air Temperature</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" id="rel-humidity-tab" data-bs-toggle="tab" data-bs-target="#rel-humidity-pane" type="button"><i class="bi bi-droplet me-2"></i>Relative Humidity</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" id="sky-cover-tab" data-bs-toggle="tab" data-bs-target="#sky-cover-pane" type="button"><i class="bi bi-clouds me-2"></i>Sky Cover</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" id="wind-tab" data-bs-toggle="tab" data-bs-target="#wind-pane" type="button"><i class="bi bi-wind me-2"></i>Wind</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" id="solar-rad-tab" data-bs-toggle="tab" data-bs-target="#solar-rad-pane" type="button"><i class="bi bi-brightness-high me-2"></i>Solar Radiation & Daylight</button></li>                <li class="nav-item" role="presentation"><button class="nav-link" id="sun-path-tab" data-bs-toggle="tab" data-bs-target="#sun-path-pane" type="button"><i class="bi bi-sunrise me-2"></i>Sun Path</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" id="psychro-chart-tab" data-bs-toggle="tab" data-bs-target="#psychro-chart-pane" type="button"><i class="bi bi-graph-up me-2"></i>Psychrometric Chart</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" id="outdoor-tab" data-bs-toggle="tab" data-bs-target="#outdoor" type="button" role="tab" aria-controls="outdoor" aria-selected="false"><i class="bi bi-tree me-2"></i>Outdoor Comfort</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" id="peak-conditions-tab" data-bs-toggle="tab" data-bs-target="#peak-conditions-pane" type="button" role="tab"><i class="bi bi-fire me-2"></i>Peak Conditions & Thermal Analysis</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" id="material-analysis-tab" data-bs-toggle="tab" data-bs-target="#material-analysis-pane" type="button"><i class="bi bi-layers me-2"></i>Material Analysis</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" id="data-tables-tab" data-bs-toggle="tab" data-bs-target="#data-tables-pane" type="button"><i class="bi bi-calendar3 me-2"></i>Data Tables</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" id="climate-morphing-tab" data-bs-toggle="tab" data-bs-target="#climate-morphing-pane" type="button"><i class="bi bi-cloud-sun me-2"></i>Future Climate Projection</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link disabled" id="compare-tab" data-bs-toggle="tab" data-bs-target="#compare-pane" type="button" tabindex="-1"><i class="bi bi-signpost-split me-2"></i>Compare</button></li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content bg-white p-3 border border-top-0 rounded-bottom" id="viz-tabs-content">
+
+                <div class="tab-pane fade show active" id="air-temp-pane" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area">
+                            <div id="temp-heatmap-chart" class="chart-container mb-5"></div>
+                            <div id="temp-boxplot-chart" class="chart-container mb-5"></div> 
+                            <div id="temp-diurnal-chart" class="chart-container"></div> 
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <div></div>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('rel-humidity-tab').click()">Next: Relative Humidity &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="rel-humidity-pane" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area">
+                            <div id="rh-heatmap-chart" class="chart-container mb-5"></div>
+                            <div id="rh-boxplot-chart" class="chart-container mb-5"></div>
+                            <div id="rh-diurnal-chart" class="chart-container"></div>
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('air-temp-tab').click()">&larr; Previous: Air Temperature</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('sky-cover-tab').click()">Next: Sky Cover &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="sky-cover-pane" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area">
+                            <div id="sky-cover-bands-chart" class="chart-container mb-5"></div>
+                            <div id="sky-cover-bar-chart" class="chart-container"></div>
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('rel-humidity-tab').click()">&larr; Previous: Relative Humidity</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('wind-tab').click()">Next: Wind &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="wind-pane" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area">
+                            <div id="dynamic-wind-rose-chart" class="chart-container mb-5"></div>
+                            <div id="monthly-wind-roses-chart" class="chart-container mb-5"></div>
+                            <div id="avg-wind-speed-chart" class="chart-container"></div>
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('sky-cover-tab').click()">&larr; Previous: Sky Cover</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('solar-rad-tab').click()">Next: Solar Radiation &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="solar-rad-pane" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                            </div>
+                        <div class="col-lg-9 main-chart-area">
+                            <div id="solar-top-menu-container"></div>
+                            
+                            <div id="radiation-view">
+                                <div id="dni-heatmap-chart" class="chart-container mb-5"></div>
+                                <div id="radiation-multibar-chart" class="chart-container mb-5"></div>
+                                <div id="sun-hours-chart" class="chart-container"></div>
+                            </div>
+                            
+                            <div id="illuminance-view" style="display: none;">
+                                <div id="illuminance-heatmap-chart" class="chart-container mb-5"></div>
+                                <div id="illuminance-multibar-chart" class="chart-container mb-5"></div>
+                                <div id="zenith-heatmap-chart" class="chart-container"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('wind-tab').click()">&larr; Previous: Wind</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('sun-path-tab').click()">Next: Sun Path &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="sun-path-pane" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area">
+                            <div id="sun-path-chart" class="chart-container"></div>
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('solar-rad-tab').click()">&larr; Previous: Solar Radiation</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('psychro-chart-tab').click()">Next: Psychrometric Chart &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+
+                <div class="tab-pane fade" id="psychro-chart-pane" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area">
+                            <div id="psychrometric-chart" class="chart-container"></div>
+                            <div id="bioclimatic-frequency-chart" class="chart-container mt-5"></div>
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('sun-path-tab').click()">&larr; Previous: Sun Path</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('outdoor-tab').click()">Next: Outdoor Comfort &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="outdoor" role="tabpanel" aria-labelledby="outdoor-tab">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area">
+                            
+                            <div id="outdoor-charts-wrapper"></div>
+                            
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('psychro-chart-tab').click()">&larr; Previous: Psychrometric Chart</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('peak-conditions-tab').click()">Next: Peak Conditions &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="peak-conditions-pane" role="tabpanel">
+                    <div class="row g-0 content-wrapper">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area p-4 overflow-y-auto">
+                            <div id="peak-kpi-cards" class="row g-3 mb-4"></div>
+                            
+                            <div id="peak-calendar-chart" class="chart-container mb-2 w-100"></div>
+                            <hr class="my-4">
+                            <div id="peak-diurnal-chart" class="chart-container mb-5 w-100"></div>
+                            <div id="peak-demand-chart" class="chart-container w-100"></div>
+                            <div id="peak-duration-chart" class="chart-container w-100"></div>
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('outdoor-tab').click()">&larr; Previous: Outdoor Comfort</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('material-analysis-tab').click()">Next: Material Analysis &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="material-analysis-pane" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area">
+                            <div class="card mb-3">
+                                <div class="card-header d-flex justify-content-between align-items-center cursor-pointer" data-bs-toggle="collapse" data-bs-target="#collapseMaterialSketch" aria-expanded="true" aria-controls="collapseMaterialSketch">
+                                    <h6 class="mb-0 fw-semibold">Surface Heat Balance Visualization</h6>
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                                <div id="collapseMaterialSketch" class="collapse show">
+                                    <div class="card-body">
+                                        <div id="material-sketch-container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="material-heatmap-chart" class="chart-container mb-5"></div>
+                            <div id="material-boxplot-chart" class="chart-container mb-5"></div>
+                            <div id="thermal-mass-chart" class="chart-container mb-5" style="display: none;"></div>
+                            
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('peak-conditions-tab').click()">&larr; Previous: Peak Conditions</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('data-tables-tab').click()">Next: Data Tables &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="data-tables-pane" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area">
+                            <div id="monthly-summary-table" class="data-table-container"></div>
+                            <div id="daily-data-table" class="data-table-container"></div>
+                            <div id="hourly-data-table" class="data-table-container"></div>
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('material-analysis-tab').click()">&larr; Previous: Material Analysis</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('climate-morphing-tab').click()">Next: Climate Change Weather Morphing &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="climate-morphing-pane" role="tabpanel">
+                    <div class="row g-0 content-wrapper">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area p-4 overflow-y-auto">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compare Tab Pane -->
+                <div class="tab-pane fade" id="compare-pane" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-3 left-panel">
+                        </div>
+                        <div class="col-lg-9 main-chart-area">
+                            <div id="compare-content-area"></div>
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top tab-nav-container">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('climate-morphing-tab').click()">&larr; Previous: Climate Change Weather Morphing</button>
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>              
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="container-fluid bg-light py-4 mt-5 border-top">
+        <div class="container text-center text-muted">
+            <p class="mb-1 small fw-medium text-dark">EPW Insights v1.0 | Copyright &copy; 2025-2026</p>
+            <p class="mb-2 small footer-license">
+                Released under the <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer" class="footer-text-link">AGPL-3.0</a> license
+            </p>
+            <div class="footer-links small">
+                <a href="https://github.com/epwinsights/epwinsights.github.io" target="_blank" rel="noopener noreferrer" class="footer-text-link">Repository</a>
+                <span class="footer-dot" aria-hidden="true">&middot;</span>
+                <a href="https://github.com/epwinsights/epwinsights.github.io/issues" target="_blank" rel="noopener noreferrer" class="footer-text-link">Report a Bug</a>
+                <span class="footer-dot" aria-hidden="true">&middot;</span>
+                <button type="button" class="footer-text-link footer-cite-btn btn btn-link p-0 border-0 align-baseline" data-bs-toggle="modal" data-bs-target="#cite-modal">Cite (DOI)</button>
+                <span class="footer-dot" aria-hidden="true">&middot;</span>
+                <a href="https://github.com/ehsan-rostami" target="_blank" rel="noopener noreferrer" class="footer-text-link">Author's GitHub</a>
+                <span class="footer-dot" aria-hidden="true">&middot;</span>
+                <a href="https://linkedin.com/in/ehsanrostami9" target="_blank" rel="noopener noreferrer" class="footer-text-link">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Floating Scroll To Top Button -->
+    <button id="scroll-to-top-btn" class="btn btn-primary rounded-circle" aria-label="Scroll to top" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5 .5z"/>
+        </svg>
+    </button>
+
+    <!-- JS Libraries -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/suncalc@1.8.0/suncalc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <script type="module" src="/src/app.js"></script>
+
+    <script>
+        const scrollTopBtn = document.getElementById('scroll-to-top-btn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTopBtn.style.display = 'flex';
+            } else {
+                scrollTopBtn.style.display = 'none';
+            }
+        });
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+city,koppen,mean_averaged_dMRT_C,mean_worst_dMRT_C,mean_best_dMRT_C,mean_worst_minus_avg_C,mean_avg_minus_best_C
+Cairo,BWh,62.2,65.1,60.0,2.9,2.2
+Chicago,Dfa,61.1,63.9,58.9,2.8,2.2
+London,Cfb,58.0,61.2,55.2,3.2,2.8
+Moscow,Dfb,59.0,62.2,56.0,3.2,3.0
+Mumbai,Aw,61.9,64.3,60.1,2.4,1.8
+Nairobi,Cwb,64.0,65.7,62.7,1.6,1.3
+Phoenix,BWh,71.2,73.6,69.3,2.4,1.8
+Rio de Janeiro,Am,61.9,63.7,60.5,1.8,1.3
+Rome,Csa,62.8,66.0,60.1,3.2,2.6
+Santiago,BSk,66.1,68.9,64.0,2.8,2.1
+Singapore,Af,54.7,56.9,52.8,2.2,1.9
+Sydney,Cfa,65.5,68.4,63.3,2.9,2.2
+Tehran,BSk,74.2,76.1,72.7,2.0,1.5
+Ulaanbaatar,Dwb,63.0,66.7,59.8,3.7,3.2

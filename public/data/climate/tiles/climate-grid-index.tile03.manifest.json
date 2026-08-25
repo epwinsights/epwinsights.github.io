@@ -1,0 +1,1 @@
+{"type":"grid-index","nCells":747,"bbox":{"latMin":-76.5,"latMax":33.5,"lonMin":-77.5,"lonMax":-65.5},"nodata":{"int16":-32768},"buffers":{"int16":"climate-grid-index.tile03.i16.bin"},"fields":{"lat":{"dtype":"int16","offset":0,"scale":10.0},"lon":{"dtype":"int16","offset":747,"scale":10.0}}}

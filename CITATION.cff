@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it using the metadata below.
+  A peer-reviewed article describing this work is currently in
+  preparation; citation details will be added here once published.
+title: "EPW Insights"
+abstract: >-
+  A browser-based, fully client-side tool for analyzing EnergyPlus
+  Weather (EPW) files. Provides psychrometric charts, outdoor thermal
+  comfort analysis (UTCI, SET), material and thermal mass analysis,
+  and future climate projections using the CMIP6/IPCC AR6 morphing
+  method, with no server-side processing.
+authors:
+  - family-names: Rostami
+    given-names: Ehsan
+    orcid: "https://orcid.org/0009-0009-4513-5260"
+    website: "https://ehsan-rostami.github.io"
+version: 1.0.0
+date-released: "2026-08-20"
+repository-code: "https://github.com/epwinsights/epwinsights.github.io"
+url: "https://epwinsights.github.io"
+license: AGPL-3.0-or-later
+keywords:
+  - EnergyPlus Weather
+  - EPW
+  - climate data visualization
+  - psychrometric chart
+  - outdoor thermal comfort
+  - bioclimatic architecture
+  - building performance simulation
+  - CMIP6
+  - IPCC AR6
+  - climate change projection
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.0000000
+    description: "The DOI of this version of the software (update after first Zenodo release)."

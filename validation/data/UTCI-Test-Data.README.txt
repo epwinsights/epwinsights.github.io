@@ -1,0 +1,7 @@
+UTCI-Test-Data.txt is NOT included in this repository.
+Download it from the official source and place it in this folder as "UTCI-Test-Data.txt" before running `npm run validate:utci`:
+
+  Source : Bröde et al. 2012
+  Zenodo : https://doi.org/10.5281/zenodo.5503968
+
+Expected format: tab-separated, header row, includes a "UTCI-Fiala" column used as ground truth by validate_utci.mjs.

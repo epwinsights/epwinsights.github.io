@@ -1,0 +1,31 @@
+EPW Insights - Computational Performance Benchmark
+Generated: 2026-08-23T13:56:52.045Z
+Node.js: v26.4.0 (win32 x64)
+Sample: 14 of 14 cities used throughout the manuscript (Table A.2)
+Note: these are pure Node.js computation times for the core modules only (no browser, no DOM/chart rendering, no network fetch of climate-morphing tiles). They are a lower bound on real in-browser time, not a substitute for it.
+
+Per-city results
+City	Records	Parse (ms)	Comfort (ms)	Material (ms)	Total (ms)
+Cairo	8760	85.9	96.1	196.9	379.0
+Chicago	8760	88.5	108.9	244.8	442.2
+London	8760	82.7	98.9	170.0	351.5
+Moscow	8760	81.3	96.2	142.8	320.3
+Mumbai	8760	84.8	106.5	205.0	396.3
+Nairobi	8760	79.5	96.1	230.9	406.6
+Phoenix	8760	85.2	96.8	165.9	347.9
+RioDeJaneiro	8760	81.6	96.9	156.8	335.2
+Rome	8760	82.0	98.9	206.9	387.8
+Santiago	8760	79.3	95.9	196.1	371.3
+Singapore	8760	82.6	97.6	196.1	376.3
+Sydney	8760	79.9	96.4	181.9	358.2
+Tehran	8760	82.5	97.8	170.0	350.3
+Ulaanbataar	8760	79.9	99.0	179.2	358.1
+
+Summary across 14 cities
+Parse time (ms): mean 82.6, range 79.3-88.5
+Outdoor Comfort time (ms): mean 98.7, range 95.9-108.9
+Material Analysis time (ms): mean 188.8, range 142.8-244.8
+Total time (ms): mean 370.1, range 320.3-442.2
+Peak Node.js heap observed at any point across all 14 cities in this run: 113.7 MB
+
+This Node.js heap figure reflects only the computation modules under Node, not full in-browser memory (which also includes the DOM, D3 rendering, and the browser runtime itself). See the accompanying browser measurement, if recorded, for the in-browser figure actually cited in the paper.

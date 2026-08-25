@@ -1,0 +1,223 @@
+{
+  "nCellsTotal": 24257,
+  "gridFilePattern": "climate-grid-index.tile{id:02d}",
+  "dataFilePattern": "data.tile{id:02d}",
+  "tiles": [
+    {
+      "id": 0,
+      "latMin": -90.0,
+      "latMax": -76.5,
+      "lonMin": -180.0,
+      "lonMax": -121.5,
+      "nCells": 793
+    },
+    {
+      "id": 1,
+      "latMin": -90.0,
+      "latMax": -76.5,
+      "lonMin": -121.5,
+      "lonMax": -65.5,
+      "nCells": 784
+    },
+    {
+      "id": 2,
+      "latMin": -76.5,
+      "latMax": 33.5,
+      "lonMin": -180.0,
+      "lonMax": -77.5,
+      "nCells": 756
+    },
+    {
+      "id": 3,
+      "latMin": -76.5,
+      "latMax": 33.5,
+      "lonMin": -77.5,
+      "lonMax": -65.5,
+      "nCells": 747
+    },
+    {
+      "id": 4,
+      "latMin": 33.5,
+      "latMax": 90.0,
+      "lonMin": -180.0,
+      "lonMax": -120.5,
+      "nCells": 806
+    },
+    {
+      "id": 5,
+      "latMin": 33.5,
+      "latMax": 90.0,
+      "lonMin": -120.5,
+      "lonMax": -103.5,
+      "nCells": 725
+    },
+    {
+      "id": 6,
+      "latMin": 33.5,
+      "latMax": 90.0,
+      "lonMin": -103.5,
+      "lonMax": -65.5,
+      "nCells": 1492
+    },
+    {
+      "id": 7,
+      "latMin": -90.0,
+      "latMax": -70.5,
+      "lonMin": -65.5,
+      "lonMax": -13.5,
+      "nCells": 786
+    },
+    {
+      "id": 8,
+      "latMin": -90.0,
+      "latMax": -70.5,
+      "lonMin": -13.5,
+      "lonMax": 25.5,
+      "nCells": 779
+    },
+    {
+      "id": 9,
+      "latMin": -70.5,
+      "latMax": 3.5,
+      "lonMin": -65.5,
+      "lonMax": 25.5,
+      "nCells": 1486
+    },
+    {
+      "id": 10,
+      "latMin": 3.5,
+      "latMax": 63.5,
+      "lonMin": -65.5,
+      "lonMax": -1.5,
+      "nCells": 770
+    },
+    {
+      "id": 11,
+      "latMin": 63.5,
+      "latMax": 90.0,
+      "lonMin": -65.5,
+      "lonMax": -1.5,
+      "nCells": 752
+    },
+    {
+      "id": 12,
+      "latMin": 3.5,
+      "latMax": 32.5,
+      "lonMin": -1.5,
+      "lonMax": 25.5,
+      "nCells": 764
+    },
+    {
+      "id": 13,
+      "latMin": 32.5,
+      "latMax": 90.0,
+      "lonMin": -1.5,
+      "lonMax": 25.5,
+      "nCells": 747
+    },
+    {
+      "id": 14,
+      "latMin": -90.0,
+      "latMax": -70.5,
+      "lonMin": 25.5,
+      "lonMax": 64.0,
+      "nCells": 760
+    },
+    {
+      "id": 15,
+      "latMin": -90.0,
+      "latMax": -70.5,
+      "lonMin": 64.0,
+      "lonMax": 101.5,
+      "nCells": 760
+    },
+    {
+      "id": 16,
+      "latMin": -70.5,
+      "latMax": 1.5,
+      "lonMin": 25.5,
+      "lonMax": 101.5,
+      "nCells": 753
+    },
+    {
+      "id": 17,
+      "latMin": 1.5,
+      "latMax": 21.5,
+      "lonMin": 25.5,
+      "lonMax": 101.5,
+      "nCells": 749
+    },
+    {
+      "id": 18,
+      "latMin": -90.0,
+      "latMax": -69.5,
+      "lonMin": 101.5,
+      "lonMax": 138.5,
+      "nCells": 777
+    },
+    {
+      "id": 19,
+      "latMin": -90.0,
+      "latMax": -69.5,
+      "lonMin": 138.5,
+      "lonMax": 180.0,
+      "nCells": 752
+    },
+    {
+      "id": 20,
+      "latMin": -69.5,
+      "latMax": 21.5,
+      "lonMin": 101.5,
+      "lonMax": 180.0,
+      "nCells": 1486
+    },
+    {
+      "id": 21,
+      "latMin": 21.5,
+      "latMax": 48.5,
+      "lonMin": 25.5,
+      "lonMax": 59.5,
+      "nCells": 802
+    },
+    {
+      "id": 22,
+      "latMin": 21.5,
+      "latMax": 48.5,
+      "lonMin": 59.5,
+      "lonMax": 89.5,
+      "nCells": 786
+    },
+    {
+      "id": 23,
+      "latMin": 48.5,
+      "latMax": 90.0,
+      "lonMin": 25.5,
+      "lonMax": 89.5,
+      "nCells": 1482
+    },
+    {
+      "id": 24,
+      "latMin": 21.5,
+      "latMax": 49.5,
+      "lonMin": 89.5,
+      "lonMax": 116.5,
+      "nCells": 756
+    },
+    {
+      "id": 25,
+      "latMin": 49.5,
+      "latMax": 90.0,
+      "lonMin": 89.5,
+      "lonMax": 116.5,
+      "nCells": 753
+    },
+    {
+      "id": 26,
+      "latMin": 21.5,
+      "latMax": 90.0,
+      "lonMin": 116.5,
+      "lonMax": 180.0,
+      "nCells": 1454
+    }
+  ]
+}

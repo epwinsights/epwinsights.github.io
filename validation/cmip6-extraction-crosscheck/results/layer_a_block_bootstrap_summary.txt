@@ -1,0 +1,13 @@
+Layer A: city-clustered block bootstrap CI for Pearson r
+
+Input: layer_a_comparison_tas.csv
+n = 168 rows across 14 cities (14 cities x 4 SSPs x 3 periods)
+
+Pearson r (point estimate)  = 0.971
+Row-level Fisher 95% CI     = 0.961 to 0.979
+  (naive; treats all 168 rows as independent draws)
+
+City-block bootstrap 95% CI = 0.959 to 0.986
+  (10000 replicates, seed=42, resampling 14 cities with replacement,
+  pooling all rows of each drawn city so within-city correlation is preserved)
+Bootstrap replicate range   = 0.945 to 0.996

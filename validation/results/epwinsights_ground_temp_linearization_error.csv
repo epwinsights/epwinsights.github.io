@@ -1,0 +1,15 @@
+city,koppen,mean_Told_C,mean_Tnew_C,mean_error_C,max_abs_error_C
+Cairo,BWh,50.65,47.97,2.679,4.514
+Chicago,Dfa,30.91,29.62,1.291,1.608
+London,Cfb,35.18,33.70,1.484,1.913
+Moscow,Dfb,44.58,37.74,6.843,7.404
+Mumbai,Aw,45.86,43.06,2.796,3.103
+Nairobi,Cwb,28.76,28.05,0.704,0.893
+Phoenix,BWh,56.95,51.26,5.691,11.060
+Rio de Janeiro,Am,37.55,35.47,2.077,2.742
+Rome,Csa,29.18,28.48,0.707,0.776
+Santiago,BSk,39.76,36.62,3.135,3.980
+Singapore,Af,40.58,38.35,2.223,3.243
+Sydney,Cfa,43.15,39.83,3.319,6.481
+Tehran,BSk,44.97,43.05,1.920,2.835
+Ulaanbaatar,Dwb,19.77,19.07,0.702,0.853

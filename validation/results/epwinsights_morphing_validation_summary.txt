@@ -1,0 +1,61 @@
+Overall (all cities, SSPs, horizons):
+  frostDays: MAE=3.88  RMSE=6.44  Bias=2.63  MAPE=58.5% (excl. 67 near-zero-ref)  nRMSE=46.9%  r=0.90 (95% CI: 0.87-0.93)  (n=168)
+  tropicalNights: MAE=8.29  RMSE=13.90  Bias=-3.91  MAPE=49.5% (excl. 19 near-zero-ref)  nRMSE=52.0%  r=0.87 (95% CI: 0.82-0.90)  (n=168)
+  coolingDegreeDays: MAE=58.44  RMSE=90.81  Bias=-4.94  MAPE=31.7% (excl. 0 near-zero-ref)  nRMSE=37.5%  r=0.95 (95% CI: 0.94-0.97)  (n=168)
+  heatingDegreeDays: MAE=58.57  RMSE=89.24  Bias=48.83  MAPE=34.8% (excl. 25 near-zero-ref)  nRMSE=28.9%  r=0.97 (95% CI: 0.96-0.98)  (n=168)
+
+SSP = ssp126:
+  frostDays: MAE=3.57  RMSE=5.17  Bias=2.79  MAPE=76.0% (excl. 18 near-zero-ref)  nRMSE=80.5%  r=0.74 (95% CI: 0.57-0.85)  (n=42)
+  tropicalNights: MAE=4.94  RMSE=6.69  Bias=-2.78  MAPE=54.5% (excl. 8 near-zero-ref)  nRMSE=70.9%  r=0.79 (95% CI: 0.64-0.88)  (n=42)
+  coolingDegreeDays: MAE=43.44  RMSE=58.13  Bias=-15.14  MAPE=39.2% (excl. 0 near-zero-ref)  nRMSE=65.3%  r=0.86 (95% CI: 0.75-0.92)  (n=42)
+  heatingDegreeDays: MAE=46.42  RMSE=61.98  Bias=44.30  MAPE=37.0% (excl. 7 near-zero-ref)  nRMSE=42.4%  r=0.96 (95% CI: 0.92-0.98)  (n=42)
+
+SSP = ssp245:
+  frostDays: MAE=4.23  RMSE=6.69  Bias=3.09  MAPE=51.2% (excl. 17 near-zero-ref)  nRMSE=55.2%  r=0.87 (95% CI: 0.77-0.93)  (n=42)
+  tropicalNights: MAE=8.38  RMSE=12.38  Bias=-4.56  MAPE=49.4% (excl. 3 near-zero-ref)  nRMSE=68.9%  r=0.79 (95% CI: 0.64-0.88)  (n=42)
+  coolingDegreeDays: MAE=46.35  RMSE=71.32  Bias=-22.57  MAPE=30.9% (excl. 0 near-zero-ref)  nRMSE=47.0%  r=0.93 (95% CI: 0.88-0.96)  (n=42)
+  heatingDegreeDays: MAE=67.78  RMSE=98.55  Bias=64.71  MAPE=37.1% (excl. 6 near-zero-ref)  nRMSE=38.4%  r=0.96 (95% CI: 0.92-0.98)  (n=42)
+
+SSP = ssp370:
+  frostDays: MAE=3.75  RMSE=6.30  Bias=2.21  MAPE=53.5% (excl. 16 near-zero-ref)  nRMSE=43.3%  r=0.91 (95% CI: 0.85-0.95)  (n=42)
+  tropicalNights: MAE=9.20  RMSE=15.34  Bias=-3.76  MAPE=45.9% (excl. 5 near-zero-ref)  nRMSE=53.6%  r=0.86 (95% CI: 0.75-0.92)  (n=42)
+  coolingDegreeDays: MAE=66.63  RMSE=101.05  Bias=0.54  MAPE=29.6% (excl. 0 near-zero-ref)  nRMSE=39.2%  r=0.94 (95% CI: 0.89-0.97)  (n=42)
+  heatingDegreeDays: MAE=55.14  RMSE=84.68  Bias=44.35  MAPE=32.6% (excl. 6 near-zero-ref)  nRMSE=25.9%  r=0.98 (95% CI: 0.95-0.99)  (n=42)
+
+SSP = ssp585:
+  frostDays: MAE=3.97  RMSE=7.38  Bias=2.45  MAPE=54.3% (excl. 16 near-zero-ref)  nRMSE=41.0%  r=0.92 (95% CI: 0.86-0.96)  (n=42)
+  tropicalNights: MAE=10.66  RMSE=18.43  Bias=-4.56  MAPE=48.6% (excl. 3 near-zero-ref)  nRMSE=50.6%  r=0.87 (95% CI: 0.77-0.93)  (n=42)
+  coolingDegreeDays: MAE=77.33  RMSE=119.63  Bias=17.42  MAPE=27.3% (excl. 0 near-zero-ref)  nRMSE=36.6%  r=0.96 (95% CI: 0.93-0.98)  (n=42)
+  heatingDegreeDays: MAE=64.92  RMSE=105.49  Bias=41.96  MAPE=32.5% (excl. 6 near-zero-ref)  nRMSE=25.8%  r=0.97 (95% CI: 0.95-0.98)  (n=42)
+
+Target year = 2030:
+  frostDays: MAE=3.39  RMSE=5.09  Bias=2.50  MAPE=73.2% (excl. 24 near-zero-ref)  nRMSE=83.7%  r=0.71 (95% CI: 0.54-0.82)  (n=56)
+  tropicalNights: MAE=5.39  RMSE=7.07  Bias=-3.13  MAPE=63.2% (excl. 6 near-zero-ref)  nRMSE=83.2%  r=0.72 (95% CI: 0.57-0.83)  (n=56)
+  coolingDegreeDays: MAE=35.31  RMSE=48.22  Bias=-17.07  MAPE=37.4% (excl. 0 near-zero-ref)  nRMSE=69.6%  r=0.84 (95% CI: 0.74-0.90)  (n=56)
+  heatingDegreeDays: MAE=45.13  RMSE=67.47  Bias=42.95  MAPE=37.3% (excl. 9 near-zero-ref)  nRMSE=48.7%  r=0.93 (95% CI: 0.88-0.96)  (n=56)
+
+Target year = 2050:
+  frostDays: MAE=3.77  RMSE=5.67  Bias=2.31  MAPE=54.2% (excl. 22 near-zero-ref)  nRMSE=55.8%  r=0.86 (95% CI: 0.78-0.92)  (n=56)
+  tropicalNights: MAE=7.67  RMSE=10.55  Bias=-3.26  MAPE=47.6% (excl. 7 near-zero-ref)  nRMSE=66.7%  r=0.80 (95% CI: 0.68-0.88)  (n=56)
+  coolingDegreeDays: MAE=53.78  RMSE=75.90  Bias=-10.46  MAPE=32.0% (excl. 0 near-zero-ref)  nRMSE=57.9%  r=0.90 (95% CI: 0.84-0.94)  (n=56)
+  heatingDegreeDays: MAE=55.36  RMSE=80.58  Bias=47.27  MAPE=34.4% (excl. 8 near-zero-ref)  nRMSE=35.7%  r=0.96 (95% CI: 0.93-0.97)  (n=56)
+
+Target year = 2080:
+  frostDays: MAE=4.48  RMSE=8.13  Bias=3.09  MAPE=49.3% (excl. 21 near-zero-ref)  nRMSE=42.0%  r=0.92 (95% CI: 0.87-0.95)  (n=56)
+  tropicalNights: MAE=11.83  RMSE=20.46  Bias=-5.35  MAPE=37.5% (excl. 6 near-zero-ref)  nRMSE=55.8%  r=0.84 (95% CI: 0.75-0.91)  (n=56)
+  coolingDegreeDays: MAE=86.22  RMSE=129.05  Bias=12.71  MAPE=25.8% (excl. 0 near-zero-ref)  nRMSE=40.5%  r=0.95 (95% CI: 0.92-0.97)  (n=56)
+  heatingDegreeDays: MAE=75.21  RMSE=113.33  Bias=56.27  MAPE=32.8% (excl. 8 near-zero-ref)  nRMSE=26.8%  r=0.97 (95% CI: 0.95-0.98)  (n=56)
+
+Note: heatingDegreeDays under ssp245/ssp370/ssp585 at target year 2080 is quantized
+at a slightly reduced precision by the offline tile-generation pipeline (Int16 scale
+~6.9-9.9 instead of 10.0, because the whole-Earth max |hdd| for those specific
+SSP/period files would otherwise clip). Worst-case rounding error: +/-0.05 to
++/-0.07 degree-days, negligible next to the actual deltas (hundreds of degree-days).
+Not interpolation/extrapolation, and not included in any statistic above beyond its
+true (negligible) contribution to the raw values already used to compute them.
+
+Note: coolingDegreeDays/heatingDegreeDays above are computed on the EPW side with
+base temperatures of 22C/15.5C, matching the CMIP6-native cd/hd definition (IPCC AR6
+WGI Annex VI), not the platform default of 24C/18C used elsewhere in the app. This is
+a deliberate choice for this self-consistency comparison specifically, so both sides
+use the same physical definition of a degree-day; see the manuscript, Section 4.2.

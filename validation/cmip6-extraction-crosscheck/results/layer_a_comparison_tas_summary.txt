@@ -1,0 +1,24 @@
+Layer A: external source comparison against IPCC-WG1 Atlas (tas)
+
+n = 168 paired points (14 locations x 4 SSPs x 3 periods)
+MAE  = 0.234 degC
+RMSE = 0.333 degC
+Bias = 0.051 degC (positive means the project runs warmer than Atlas)
+Pearson r = 0.971 (95% CI: 0.961 to 0.979)
+R2 = 0.944
+
+Mean difference by location (project minus Atlas, averaged over all SSPs and periods):
+  Cairo            mean_diff=-0.035  min=-0.197  max=+0.181
+  Chicago          mean_diff=+0.361  min=-0.211  max=+0.988
+  London           mean_diff=-0.405  min=-0.672  max=-0.117
+  Moscow           mean_diff=+0.461  min=-0.173  max=+1.297
+  Mumbai           mean_diff=-0.248  min=-0.452  max=-0.014
+  Nairobi          mean_diff=+0.143  min=-0.133  max=+0.433
+  Phoenix          mean_diff=+0.221  min=-0.254  max=+1.026
+  Rio_de_Janeiro   mean_diff=+0.030  min=-0.197  max=+0.238
+  Rome             mean_diff=+0.029  min=-0.209  max=+0.221
+  Santiago         mean_diff=+0.219  min=-0.332  max=+1.137
+  Singapore        mean_diff=+0.027  min=-0.098  max=+0.285
+  Sydney           mean_diff=-0.002  min=-0.146  max=+0.155
+  Tehran           mean_diff=+0.168  min=-0.022  max=+0.323
+  Ulaanbaatar      mean_diff=-0.257  min=-0.465  max=+0.015

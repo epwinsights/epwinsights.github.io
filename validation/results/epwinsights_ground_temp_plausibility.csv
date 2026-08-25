@@ -1,0 +1,15 @@
+city,koppen,peak_day_month,peak_day_day,mean_Ta_C,mean_Tg_C,mean_deltaT_C,min_deltaT_C,max_deltaT_C
+Cairo,BWh,5,6,39.5,48.0,8.4,6.5,10.5
+Chicago,Dfa,6,3,22.8,29.6,6.9,5.3,8.0
+London,Cfb,7,9,27.6,33.7,6.1,5.0,7.2
+Moscow,Dfb,6,12,25.3,37.7,12.4,11.0,13.3
+Mumbai,Aw,4,21,33.7,43.1,9.3,8.4,10.3
+Nairobi,Cwb,3,19,22.6,28.1,5.5,4.4,7.0
+Phoenix,BWh,6,10,39.2,51.3,12.0,7.4,17.0
+Rio de Janeiro,Am,12,4,26.6,35.5,8.8,5.9,10.6
+Rome,Csa,5,14,23.4,28.5,5.1,4.5,5.5
+Santiago,BSk,12,18,25.9,36.6,10.7,8.6,12.0
+Singapore,Af,3,7,30.7,38.4,7.7,0.9,10.3
+Sydney,Cfa,1,11,29.5,39.8,10.3,6.5,13.6
+Tehran,BSk,6,7,34.9,43.0,8.1,6.3,10.5
+Ulaanbaatar,Dwb,6,5,13.5,19.1,5.5,4.4,6.0

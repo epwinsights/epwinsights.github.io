@@ -1,0 +1,83 @@
+==============================================================================
+DIAGNOSTIC: residual error vs. CMIP6 ensemble std, and per-city breakdown
+(HDD/CDD only; testing whether the residual HDD bias correlates with
+ inter-model spread and/or climate type, consistent with a synoptic/
+ inter-annual variability-change effect that Shift+Stretch cannot capture,
+ as opposed to a simple, fixable definitional mismatch.)
+==============================================================================
+
+--- coolingDegreeDays ---
+Correlation |error| vs CMIP6 ensemble std, across all 168 rows: r = 0.381 (95% CI: 0.244 to 0.504)
+Correlation |error| vs baseline (historical) coolingDegreeDays, across all 168 rows: r = 0.004
+
+Bias in context: mean (signed) error = -4.94
+Baseline (historical) coolingDegreeDays: mean = 584.7, median = 192.3 (168 rows, 14 cities)
+Bias as % of baseline: -0.8% of mean, -2.6% of median
+
+Per climate group (mean |error|, mean CMIP6 std, mean baseline value):
+  Temperate highland (Cwb)     meanAbsErr=  205.8  meanCMIP6Std=  415.3  meanBaseline=     3.4  (n=12)
+  Tropical (Am)                meanAbsErr=  131.8  meanCMIP6Std=  207.1  meanBaseline=   674.8  (n=12)
+  Hot/Arid (BWh)               meanAbsErr=   60.3  meanCMIP6Std=  422.7  meanBaseline=  1133.4  (n=24)
+  Semi-arid (BSk)              meanAbsErr=   59.9  meanCMIP6Std=  448.8  meanBaseline=   434.0  (n=24)
+  Cold/Continental (Dwb)       meanAbsErr=   52.1  meanCMIP6Std=  110.1  meanBaseline=    10.9  (n=12)
+  Tropical (Af)                meanAbsErr=   50.3  meanCMIP6Std=  425.7  meanBaseline=  1994.3  (n=12)
+  Tropical (Aw)                meanAbsErr=   37.9  meanCMIP6Std=  323.3  meanBaseline=  1843.6  (n=12)
+  Cold/Continental (Dfb)       meanAbsErr=   34.4  meanCMIP6Std=  112.7  meanBaseline=    13.6  (n=12)
+  Cold/Continental (Dfa)       meanAbsErr=   21.5  meanCMIP6Std=  253.9  meanBaseline=   214.2  (n=12)
+  Mediterranean (Csa)          meanAbsErr=   17.2  meanCMIP6Std=  241.6  meanBaseline=   170.4  (n=12)
+  Oceanic (Cfb)                meanAbsErr=   13.6  meanCMIP6Std=   56.2  meanBaseline=     5.2  (n=12)
+  Humid subtropical (Cfa)      meanAbsErr=   13.0  meanCMIP6Std=  132.1  meanBaseline=   121.1  (n=12)
+
+Per city (mean |error|, mean CMIP6 std, mean baseline value), sorted worst to best:
+  Nairobi              meanAbsErr=  205.8  meanCMIP6Std=  415.3  meanBaseline=     3.4  (n=12)
+  Rio de Janeiro       meanAbsErr=  131.8  meanCMIP6Std=  207.1  meanBaseline=   674.8  (n=12)
+  Tehran               meanAbsErr=   78.3  meanCMIP6Std=  489.8  meanBaseline=   858.4  (n=12)
+  Phoenix              meanAbsErr=   73.9  meanCMIP6Std=  469.7  meanBaseline=  1369.6  (n=12)
+  Ulaanbaatar          meanAbsErr=   52.1  meanCMIP6Std=  110.1  meanBaseline=    10.9  (n=12)
+  Singapore            meanAbsErr=   50.3  meanCMIP6Std=  425.7  meanBaseline=  1994.3  (n=12)
+  Cairo                meanAbsErr=   46.6  meanCMIP6Std=  375.8  meanBaseline=   897.1  (n=12)
+  Santiago             meanAbsErr=   41.5  meanCMIP6Std=  407.8  meanBaseline=     9.6  (n=12)
+  Mumbai               meanAbsErr=   37.9  meanCMIP6Std=  323.3  meanBaseline=  1843.6  (n=12)
+  Moscow               meanAbsErr=   34.4  meanCMIP6Std=  112.7  meanBaseline=    13.6  (n=12)
+  Chicago              meanAbsErr=   21.5  meanCMIP6Std=  253.9  meanBaseline=   214.2  (n=12)
+  Rome                 meanAbsErr=   17.2  meanCMIP6Std=  241.6  meanBaseline=   170.4  (n=12)
+  London               meanAbsErr=   13.6  meanCMIP6Std=   56.2  meanBaseline=     5.2  (n=12)
+  Sydney               meanAbsErr=   13.0  meanCMIP6Std=  132.1  meanBaseline=   121.1  (n=12)
+
+--- heatingDegreeDays ---
+Correlation |error| vs CMIP6 ensemble std, across all 168 rows: r = 0.577 (95% CI: 0.466 to 0.670)
+Correlation |error| vs baseline (historical) heatingDegreeDays, across all 168 rows: r = 0.030
+
+Bias in context: mean (signed) error = +48.83
+Baseline (historical) heatingDegreeDays: mean = 1310.7, median = 687.8 (168 rows, 14 cities)
+Bias as % of baseline: 3.7% of mean, 7.1% of median
+
+Per climate group (mean |error|, mean CMIP6 std, mean baseline value):
+  Semi-arid (BSk)              meanAbsErr=  182.2  meanCMIP6Std=  629.4  meanBaseline=  1154.9  (n=24)
+  Hot/Arid (BWh)               meanAbsErr=   72.2  meanCMIP6Std=  177.8  meanBaseline=   278.4  (n=24)
+  Temperate highland (Cwb)     meanAbsErr=   56.5  meanCMIP6Std=   60.6  meanBaseline=     2.9  (n=12)
+  Oceanic (Cfb)                meanAbsErr=   55.5  meanCMIP6Std=  294.0  meanBaseline=  1640.7  (n=12)
+  Cold/Continental (Dwb)       meanAbsErr=   52.5  meanCMIP6Std=  537.9  meanBaseline=  5942.5  (n=12)
+  Cold/Continental (Dfa)       meanAbsErr=   35.6  meanCMIP6Std=  342.1  meanBaseline=  2752.3  (n=12)
+  Cold/Continental (Dfb)       meanAbsErr=   34.2  meanCMIP6Std=  380.3  meanBaseline=  3893.6  (n=12)
+  Tropical (Am)                meanAbsErr=   31.2  meanCMIP6Std=   24.5  meanBaseline=     0.0  (n=12)
+  Mediterranean (Csa)          meanAbsErr=   22.7  meanCMIP6Std=  153.5  meanBaseline=   945.9  (n=12)
+  Humid subtropical (Cfa)      meanAbsErr=   20.3  meanCMIP6Std=   95.9  meanBaseline=   305.7  (n=12)
+  Tropical (Aw)                meanAbsErr=    2.6  meanCMIP6Std=    3.4  meanBaseline=     0.0  (n=12)
+  Tropical (Af)                meanAbsErr=    0.0  meanCMIP6Std=    0.0  meanBaseline=     0.0  (n=12)
+
+Per city (mean |error|, mean CMIP6 std, mean baseline value), sorted worst to best:
+  Santiago             meanAbsErr=  206.5  meanCMIP6Std=  773.2  meanBaseline=   996.0  (n=12)
+  Tehran               meanAbsErr=  157.8  meanCMIP6Std=  485.6  meanBaseline=  1313.8  (n=12)
+  Phoenix              meanAbsErr=   97.0  meanCMIP6Std=  221.7  meanBaseline=   429.7  (n=12)
+  Nairobi              meanAbsErr=   56.5  meanCMIP6Std=   60.6  meanBaseline=     2.9  (n=12)
+  London               meanAbsErr=   55.5  meanCMIP6Std=  294.0  meanBaseline=  1640.7  (n=12)
+  Ulaanbaatar          meanAbsErr=   52.5  meanCMIP6Std=  537.9  meanBaseline=  5942.5  (n=12)
+  Cairo                meanAbsErr=   47.4  meanCMIP6Std=  134.0  meanBaseline=   127.0  (n=12)
+  Chicago              meanAbsErr=   35.6  meanCMIP6Std=  342.1  meanBaseline=  2752.3  (n=12)
+  Moscow               meanAbsErr=   34.2  meanCMIP6Std=  380.3  meanBaseline=  3893.6  (n=12)
+  Rio de Janeiro       meanAbsErr=   31.2  meanCMIP6Std=   24.5  meanBaseline=     0.0  (n=12)
+  Rome                 meanAbsErr=   22.7  meanCMIP6Std=  153.5  meanBaseline=   945.9  (n=12)
+  Sydney               meanAbsErr=   20.3  meanCMIP6Std=   95.9  meanBaseline=   305.7  (n=12)
+  Mumbai               meanAbsErr=    2.6  meanCMIP6Std=    3.4  meanBaseline=     0.0  (n=12)
+  Singapore            meanAbsErr=    0.0  meanCMIP6Std=    0.0  meanBaseline=     0.0  (n=12)

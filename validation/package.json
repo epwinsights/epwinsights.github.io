@@ -1,0 +1,31 @@
+{
+  "name": "epwinsights-validation",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Independent validation of EPW Insights' UTCI, SET, MRT, and Climate Morphing implementations against official reference sources and CMIP6 data.",
+  "scripts": {
+    "sync:comfort": "bash sync-core.sh",
+    "sync:morphing": "bash sync-morphing.sh",
+    "sync:all": "npm run sync:comfort && npm run sync:morphing",
+    "validate:utci": "node validate_utci.mjs",
+    "validate:set": "node validate_set.mjs",
+    "validate:mrt": "node validate_mrt.mjs",
+    "validate:mrt-c4": "node validate_mrt_c4.mjs",
+    "validate:ground-temp": "node validate_ground_temp_plausibility.mjs",
+    "validate:ground-temp-linearization": "node validate_ground_temp_linearization.mjs",
+    "validate:ground-temp-hr-accuracy": "node validate_hr_linearization_accuracy.mjs",
+    "validate:sharp-sensitivity": "node validate_sharp_sensitivity.mjs",
+    "validate:morphing": "node validate_morphing.mjs",
+    "diagnose:morphing-hdd-bias": "node diagnose_hdd_bias.mjs",
+    "validate:morphing-synthetic": "node validate_morphing_synthetic.mjs",
+    "validate:morphing-analysis-synthetic": "node validate_morphing_analysis_synthetic.mjs",
+    "validate:morphing-unit": "npm run validate:morphing-synthetic && npm run validate:morphing-analysis-synthetic",
+    "validate:all": "npm run validate:utci && npm run validate:set && npm run validate:mrt && npm run validate:mrt-c4 && npm run validate:ground-temp && npm run validate:ground-temp-linearization && npm run validate:ground-temp-hr-accuracy && npm run validate:sharp-sensitivity",
+    "validate:everything": "npm run validate:all && npm run validate:morphing-unit && npm run validate:morphing",
+    "benchmark:performance": "node measure_performance.mjs"
+  },
+  "dependencies": {
+    "suncalc": "^2.0.0"
+  }
+}
