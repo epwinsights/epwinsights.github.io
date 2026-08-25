@@ -30,6 +30,10 @@ jobs:
       - name: Install dependencies
         run: npm ci --include=dev --no-audit --no-fund --fetch-timeout=60000
 
+      - name: Show npm debug log on failure
+        if: failure()
+        run: cat /home/runner/.npm/_logs/*-debug-0.log
+
       - name: Run tests
         run: npx vitest run
 
