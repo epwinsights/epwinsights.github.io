@@ -24,10 +24,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: Update npm
-        run: npm install -g npm@latest
+          node-version: 22
+          cache: npm
 
       - name: Install dependencies
         run: |
@@ -36,8 +34,6 @@ jobs:
             echo "npm ci failed, retrying ($i)..."
             sleep 10
           done
-        env:
-          NODE_ENV: development
 
       - name: Debug node_modules
         run: ls node_modules/.bin | grep vite          
