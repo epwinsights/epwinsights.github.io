@@ -32,6 +32,9 @@ jobs:
         env:
           NODE_ENV: development
 
+      - name: Debug node_modules
+        run: ls node_modules/.bin | grep vite          
+
       - name: Run tests
         run: npx vitest run
 
