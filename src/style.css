@@ -818,6 +818,12 @@ h1, h2, h3, h4, h5, h6 {
 .maplibregl-ctrl-attrib {
     font-size: 9px;
     color: #6c757d;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.maplibregl-ctrl-attrib.attrib-visible {
+    opacity: 1;
 }
 
 .maplibregl-ctrl-attrib a {

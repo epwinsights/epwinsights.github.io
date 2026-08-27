@@ -197,6 +197,7 @@ function collapseAttributionByDefault(map) {
   const attribEl = map.getContainer().querySelector('.maplibregl-ctrl-attrib');
   if (attribEl) {
     attribEl.classList.remove('maplibregl-compact-show');
+    attribEl.classList.add('attrib-visible');
   }
 }
 
