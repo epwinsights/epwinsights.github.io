@@ -797,49 +797,43 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.2;
 }
 
-.leaflet-popup-content {
+.maplibregl-popup-content {
     font-family: Arial, sans-serif;
     font-size: 10px;
     color: #333;
     text-align: center;
 }
 
-.leaflet-popup-content b {
+.maplibregl-popup-content b {
     color: #383838;
     font-size: 11px;
 }
 
-.leaflet-control-zoom-in, .leaflet-control-zoom-out {
+.maplibregl-ctrl-zoom-in, .maplibregl-ctrl-zoom-out {
     width: 20px !important;
     height: 20px !important;
     line-height: 20px !important;
 }
 
-.leaflet-control-attribution {
-    background: rgba(255, 255, 255, 0.75) !important;
-    font-size: 9px !important;
-    padding: 1px 6px !important;
-    color: #6c757d !important;
-    line-height: 1.4 !important;
+.maplibregl-ctrl-attrib {
+    font-size: 9px;
+    color: #6c757d;
 }
 
-.leaflet-control-attribution a {
-    color: #6c757d !important;
+.maplibregl-ctrl-attrib a {
+    color: #6c757d;
 }
 
-.leaflet-control-attribution svg {
-    display: none;
-}
-
-.my-custom-popup .leaflet-popup-content-wrapper {
+.my-custom-popup .maplibregl-popup-content {
   background: #f2f2f2;
   color: #333;
   border-radius: 8px;
   box-shadow: 0 3px 14px rgba(0,0,0,0.4);
 }
 
-.my-custom-popup .leaflet-popup-tip {
-  background: #f2f2f2;
+.my-custom-popup .maplibregl-popup-tip {
+  border-top-color: #f2f2f2;
+  border-bottom-color: #f2f2f2;
 }
 
 .my-custom-marker {
@@ -904,6 +898,25 @@ h1, h2, h3, h4, h5, h6 {
     pointer-events: none;
 }
 
+.custom-cluster-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.custom-cluster-icon div {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+}
 .marker-cluster-small {
     background-color: rgba(13, 110, 253, 0.2);
 }

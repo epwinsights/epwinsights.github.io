@@ -6,14 +6,17 @@
  */
 
 import state from '../state.js';
+import { getEnglishLabeledStyle, FALLBACK_STYLE_URL } from './map-style.js';
 
 let handleMapResize = null;
 let mapResizeObserver = null;
 let orientationTimeout = null;
 
 let scrollHintEl = null;
+let currentMarker = null;
+let currentDisplayToken = 0;
 
-export function displayLocationOnMap(latitude, longitude, locationName) {
+export async function displayLocationOnMap(latitude, longitude, locationName) {
   const mapContainer = document.getElementById('map-container');
   if (!mapContainer) {
     console.error('Map container not found!');
@@ -21,55 +24,73 @@ export function displayLocationOnMap(latitude, longitude, locationName) {
   }
 
   destroyLocationMap();
+  const myToken = ++currentDisplayToken;
 
-  state.map = window.L.map('map-container', {
-    scrollWheelZoom: false,
-    zoomControl: false
-  }).setView([latitude, longitude], 4);
+  let style;
+  try {
+    style = await getEnglishLabeledStyle();
+  } catch (error) {
+    console.error('Falling back to the default map style:', error);
+    style = FALLBACK_STYLE_URL;
+  }
 
-  window.L.control.zoom({
-    position: 'bottomright'
-  }).addTo(state.map);
+  if (myToken !== currentDisplayToken) return;
+
+  state.map = new window.maplibregl.Map({
+    container: 'map-container',
+    style,
+    center: [longitude, latitude],
+    zoom: 4,
+    scrollZoom: false,
+    attributionControl: { compact: true }
+  });
+
+  state.map.addControl(new window.maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
+  state.map.once('idle', () => collapseAttributionByDefault(state.map));
 
   setupScrollZoomAffordance(mapContainer);
 
-  window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 16,
-    attribution: 'Tiles © Esri'
-  }).addTo(state.map);
+  const markerEl = document.createElement('img');
+  markerEl.src = '/img/marker-icon.svg';
+  markerEl.className = 'my-custom-marker';
+  markerEl.style.width = '28px';
+  markerEl.style.height = '28px';
 
-  const customIcon = window.L.icon({
-    iconUrl: '/img/marker-icon.svg',
-    iconSize: [28, 28],
-    iconAnchor: [14, 28],
-    popupAnchor: [0, -28],
-    className: 'my-custom-marker'
-  });
+  currentMarker = new window.maplibregl.Marker({ element: markerEl, anchor: 'bottom' })
+    .setLngLat([longitude, latitude])
+    .addTo(state.map);
 
-  const marker = window.L.marker([latitude, longitude], { icon: customIcon }).addTo(state.map);
   if (locationName) {
-    marker.bindPopup(
-      `<div class="my-custom-popup-content"><b>${locationName}</b><br>${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°</div>`,
-      { className: 'my-custom-popup' }
+    const popup = new window.maplibregl.Popup({ offset: 28, className: 'my-custom-popup' }).setHTML(
+      `<div class="my-custom-popup-content"><b>${locationName}</b><br>${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°</div>`
     );
+    currentMarker.setPopup(popup);
   }
 
-  setTimeout(() => {
-    if (state.map) {
-      state.map.invalidateSize();
-    }
-  }, 100);
+  state.map.once('load', () => {
+    if (state.map) state.map.resize();
+  });
 
   setupMapResizeHandler();
 }
 
 export function destroyLocationMap() {
+  currentDisplayToken++;
   cleanupMapResizeHandler();
   cleanupScrollZoomAffordance();
+
+  currentMarker = null;
 
   if (state.map) {
     state.map.remove();
     state.map = null;
+  }
+}
+
+function collapseAttributionByDefault(map) {
+  const attribEl = map.getContainer().querySelector('.maplibregl-ctrl-attrib');
+  if (attribEl) {
+    attribEl.classList.remove('maplibregl-compact-show');
   }
 }
 
@@ -80,17 +101,17 @@ function setupScrollZoomAffordance(mapContainer) {
   mapContainer.parentElement.appendChild(scrollHintEl);
 
   const enableScrollZoom = () => {
-    state.map.scrollWheelZoom.enable();
+    state.map.scrollZoom.enable();
     scrollHintEl.classList.add('map-scroll-hint-hidden');
   };
 
   const disableScrollZoom = () => {
-    state.map.scrollWheelZoom.disable();
+    state.map.scrollZoom.disable();
     scrollHintEl.classList.remove('map-scroll-hint-hidden');
   };
 
   state.map.on('click', enableScrollZoom);
-  state.map.on('mouseout', disableScrollZoom);
+  state.map.getContainer().addEventListener('mouseleave', disableScrollZoom);
 }
 
 function cleanupScrollZoomAffordance() {
@@ -109,16 +130,7 @@ function setupMapResizeHandler() {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       if (state.map) {
-        state.map.invalidateSize({
-          animate: false,
-          pan: false
-        });
-
-        setTimeout(() => {
-          if (state.map) {
-            state.map.invalidateSize(true);
-          }
-        }, 50);
+        state.map.resize();
       }
     }, 100);
   };

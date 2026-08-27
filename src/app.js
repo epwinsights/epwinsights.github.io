@@ -413,7 +413,7 @@ async function loadRemoteEpwPair(primaryCity, comparisonCity) {
     document.getElementById('visualization-container').classList.remove('visually-hidden');
     const loc = state.epwDataObject.metadata.location;
     if (loc) { displayLocationOnMap(loc.latitude, loc.longitude, loc.city); }
-    requestAnimationFrame(() => { if (state.map) state.map.invalidateSize(); });
+    requestAnimationFrame(() => { if (state.map) state.map.resize(); });
     renderAllCharts();
     updateCompareTabVisibility();
     setupLocationEditor();
@@ -492,7 +492,7 @@ function handleFile(file, type) {
         document.getElementById('visualization-container').classList.remove('visually-hidden');
         const loc = state.epwDataObject.metadata.location;
         if (loc) { displayLocationOnMap(loc.latitude, loc.longitude, loc.city); }
-        requestAnimationFrame(() => { if (state.map) state.map.invalidateSize(); });
+        requestAnimationFrame(() => { if (state.map) state.map.resize(); });
         renderAllCharts();
       } else {
         state.comparisonDataObject = parsedData;

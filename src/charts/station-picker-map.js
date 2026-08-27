@@ -6,7 +6,12 @@
  * Data source: NREL/EnergyPlus master.geojson, trimmed at build time by
  */
 
+import { getEnglishLabeledStyle, FALLBACK_STYLE_URL } from './map-style.js';
+
 const DATA_URL = '/data/station-index.json';
+
+const CLUSTER_RADIUS = 45;
+const CLUSTER_MAX_ZOOM = 8;
 
 const LOADING_HTML = `
   <div class="station-picker-loading">
@@ -16,26 +21,14 @@ const LOADING_HTML = `
 `;
 
 let stationMap = null;
-let markerClusterGroup = null;
+let clusterIndex = null;
 let allStations = null;
 let loadPromise = null;
 let pickedCallback = null;
-let stationIcon = null;
 
+let renderedMarkers = [];
 let currentInitToken = 0;
-
-function getStationIcon() {
-  if (!stationIcon) {
-    stationIcon = window.L.icon({
-      iconUrl: '/img/marker-icon.svg',
-      iconSize: [24, 24],
-      iconAnchor: [12, 24],
-      popupAnchor: [0, -24],
-      className: 'my-custom-marker'
-    });
-  }
-  return stationIcon;
-}
+let mapMoveHandler = null;
 
 function loadStationIndex() {
   if (allStations) return Promise.resolve(allStations);
@@ -79,28 +72,132 @@ function handleStationPick(station) {
   }
 }
 
-function buildMarkerClusterGroup(stations) {
-  const group = window.L.markerClusterGroup({
-    disableClusteringAtZoom: 9,
-    spiderfyOnMaxZoom: true,
-    showCoverageOnHover: false,
-    maxClusterRadius: 45
+function clusterSizeClass(pointCount) {
+  if (pointCount < 10) return 'marker-cluster-small';
+  if (pointCount < 100) return 'marker-cluster-medium';
+  return 'marker-cluster-large';
+}
+
+function stationsToGeoJSON(stations) {
+  return stations.map((station) => ({
+    type: 'Feature',
+    properties: station,
+    geometry: { type: 'Point', coordinates: [station.lon, station.lat] }
+  }));
+}
+
+function buildClusterIndex(stations) {
+  const index = new window.Supercluster({
+    radius: CLUSTER_RADIUS,
+    maxZoom: CLUSTER_MAX_ZOOM
+  });
+  index.load(stationsToGeoJSON(stations));
+  return index;
+}
+
+function clearRenderedMarkers() {
+  renderedMarkers.forEach((marker) => marker.remove());
+  renderedMarkers = [];
+}
+
+function createStationMarker(station) {
+  const el = document.createElement('img');
+  el.src = '/img/marker-icon.svg';
+  el.className = 'my-custom-marker';
+  el.style.width = '24px';
+  el.style.height = '24px';
+
+  const marker = new window.maplibregl.Marker({ element: el, anchor: 'bottom' })
+    .setLngLat([station.lon, station.lat]);
+
+  const popup = new window.maplibregl.Popup({ offset: 24, className: 'my-custom-popup' }).setHTML(buildPopupHtml(station));
+  popup.on('open', () => {
+    const popupEl = popup.getElement();
+    const btn = popupEl && popupEl.querySelector('.station-download-btn');
+    if (btn) {
+      btn.addEventListener('click', () => handleStationPick(station), { once: true });
+    }
+  });
+  marker.setPopup(popup);
+
+  marker.addTo(stationMap);
+  return marker;
+}
+
+function createClusterMarker(cluster) {
+  const [lon, lat] = cluster.geometry.coordinates;
+  const pointCount = cluster.properties.point_count;
+  const clusterId = cluster.properties.cluster_id;
+
+  const el = document.createElement('div');
+  el.className = `custom-cluster-icon ${clusterSizeClass(pointCount)}`;
+  el.innerHTML = `<div>${cluster.properties.point_count_abbreviated}</div>`;
+
+  el.addEventListener('click', (event) => {
+    event.stopPropagation();
+
+    const expansionZoom = clusterIndex.getClusterExpansionZoom(clusterId);
+    const canSplitFurther = expansionZoom <= CLUSTER_MAX_ZOOM;
+
+    if (canSplitFurther) {
+      stationMap.easeTo({ center: [lon, lat], zoom: expansionZoom });
+    } else {
+      spiderfyCluster(clusterId, lon, lat);
+    }
   });
 
-  stations.forEach((station) => {
-    const marker = window.L.marker([station.lat, station.lon], { icon: getStationIcon() });
-    marker.bindPopup(buildPopupHtml(station), { className: 'my-custom-popup' });
-    marker.on('popupopen', (event) => {
-      const popupEl = event.popup.getElement();
-      const btn = popupEl && popupEl.querySelector('.station-download-btn');
-      if (btn) {
-        btn.addEventListener('click', () => handleStationPick(station), { once: true });
-      }
-    });
-    group.addLayer(marker);
-  });
+  const marker = new window.maplibregl.Marker({ element: el, anchor: 'center' })
+    .setLngLat([lon, lat])
+    .addTo(stationMap);
 
-  return group;
+  return marker;
+}
+
+function spiderfyCluster(clusterId, centerLon, centerLat) {
+  const leaves = clusterIndex.getLeaves(clusterId, Infinity);
+  clearRenderedMarkers();
+
+  const centerPoint = stationMap.project([centerLon, centerLat]);
+  const radius = 12 + leaves.length * 4;
+  const angleStep = (2 * Math.PI) / leaves.length;
+
+  leaves.forEach((leaf, i) => {
+    const angle = i * angleStep;
+    const offsetPoint = {
+      x: centerPoint.x + radius * Math.cos(angle),
+      y: centerPoint.y + radius * Math.sin(angle)
+    };
+    const offsetLngLat = stationMap.unproject(offsetPoint);
+    const marker = createStationMarker(leaf.properties);
+    marker.setLngLat(offsetLngLat);
+    renderedMarkers.push(marker);
+  });
+}
+
+function renderVisibleStations() {
+  if (!stationMap || !clusterIndex) return;
+
+  clearRenderedMarkers();
+
+  const bounds = stationMap.getBounds();
+  const bbox = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()];
+  const zoom = Math.round(stationMap.getZoom());
+  const clusters = clusterIndex.getClusters(bbox, zoom);
+
+  clusters.forEach((feature) => {
+    if (feature.properties.cluster) {
+      renderedMarkers.push(createClusterMarker(feature));
+    } else {
+      renderedMarkers.push(createStationMarker(feature.properties));
+    }
+  });
+}
+
+function collapseAttributionByDefault(map) {
+  const attribEl = map.getContainer().querySelector('.maplibregl-ctrl-attrib');
+  if (attribEl) {
+    attribEl.classList.remove('maplibregl-compact-show');
+  }
 }
 
 function showEmptyMessage(container) {
@@ -139,6 +236,14 @@ export async function initStationPickerMap(containerId, options = {}) {
     return;
   }
 
+  let style;
+  try {
+    style = await getEnglishLabeledStyle();
+  } catch (error) {
+    console.error('Falling back to the default map style:', error);
+    style = FALLBACK_STYLE_URL;
+  }
+
   if (myToken !== currentInitToken) return;
 
   if (stationMap) {
@@ -147,29 +252,32 @@ export async function initStationPickerMap(containerId, options = {}) {
   }
   container.innerHTML = '';
 
-  stationMap = window.L.map(containerId, {
-    worldCopyJump: true
-  }).setView([20, 10], 2);
+  stationMap = new window.maplibregl.Map({
+    container: containerId,
+    style,
+    center: [10, 20],
+    zoom: 2,
+    renderWorldCopies: true,
+    attributionControl: { compact: true }
+  });
 
-  window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 16,
-    attribution: 'Tiles © Esri'
-  }).addTo(stationMap);
+  stationMap.once('idle', () => collapseAttributionByDefault(stationMap));
 
-  markerClusterGroup = buildMarkerClusterGroup(stations);
-  markerClusterGroup.addTo(stationMap);
+  clusterIndex = buildClusterIndex(stations);
 
-  setTimeout(() => {
-    if (stationMap) stationMap.invalidateSize();
-  }, 100);
+  mapMoveHandler = () => renderVisibleStations();
+  stationMap.on('moveend', mapMoveHandler);
+
+  stationMap.once('load', () => {
+    if (stationMap) {
+      stationMap.resize();
+      renderVisibleStations();
+    }
+  });
 }
 
 export function filterStationPickerMap(query) {
   if (!stationMap || !allStations) return;
-
-  if (markerClusterGroup) {
-    stationMap.removeLayer(markerClusterGroup);
-  }
 
   const container = stationMap.getContainer();
   hideEmptyMessage(container);
@@ -179,31 +287,40 @@ export function filterStationPickerMap(query) {
     ? allStations.filter((station) => station.t.toLowerCase().includes(term))
     : allStations;
 
-  markerClusterGroup = buildMarkerClusterGroup(filtered);
-  markerClusterGroup.addTo(stationMap);
+  clusterIndex = buildClusterIndex(filtered);
 
   if (filtered.length === 0) {
+    clearRenderedMarkers();
     showEmptyMessage(container);
     return;
   }
 
   if (term) {
-    stationMap.fitBounds(markerClusterGroup.getBounds(), {
-      padding: [40, 40],
-      maxZoom: 10
-    });
+    const lons = filtered.map((s) => s.lon);
+    const lats = filtered.map((s) => s.lat);
+    stationMap.fitBounds(
+      [[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]],
+      { padding: 40, maxZoom: 10 }
+    );
   } else {
-    stationMap.setView([20, 10], 2);
+    stationMap.setCenter([10, 20]);
+    stationMap.setZoom(2);
   }
+
+  renderVisibleStations();
 }
 
 export function destroyStationPickerMap() {
   currentInitToken++;
 
+  clearRenderedMarkers();
+
   if (stationMap) {
+    if (mapMoveHandler) stationMap.off('moveend', mapMoveHandler);
     stationMap.remove();
     stationMap = null;
-    markerClusterGroup = null;
   }
+  clusterIndex = null;
+  mapMoveHandler = null;
   pickedCallback = null;
 }
