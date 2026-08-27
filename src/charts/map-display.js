@@ -33,10 +33,9 @@ export function displayLocationOnMap(latitude, longitude, locationName) {
 
   setupScrollZoomAffordance(mapContainer);
 
-  window.L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 20,
-    attribution: '© OpenStreetMap contributors © CARTO',
-    subdomains: 'abcd'
+  window.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 16,
+    attribution: 'Tiles © Esri'
   }).addTo(state.map);
 
   const customIcon = window.L.icon({
