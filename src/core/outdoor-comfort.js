@@ -249,7 +249,14 @@ export function calculateAdvancedMRT(d, metadata, params) {
   const tGround = getGroundSurfaceTemperature(d, altRad, groundAlpha, groundEps, svf);
   const tGroundK = tGround + 273.15;
 
-  const tmrtLongwaveK = Math.pow(svf * Math.pow(tSkyK, 4) + (1 - svf) * Math.pow(tGroundK, 4), 0.25);
+  // Fixed hemispherical partition (ISO 7726 / VDI 3787-2; RayMan, ENVI-met,
+  // SOLWEIG-UMEP, LUCIDiT): the lower hemisphere is always ground (weight 0.5),
+  // independent of SVF. SVF only splits the upper hemisphere between sky and the
+  // obstruction proxy. At SVF=1 this reduces exactly to SURM's (Fischereit, 2021)
+  // H=0 fixed 0.5/0.5 split.
+  const weightSky = 0.5 * svf;
+  const weightGround = 1 - weightSky;
+  const tmrtLongwaveK = Math.pow(weightSky * Math.pow(tSkyK, 4) + weightGround * Math.pow(tGroundK, 4), 0.25);
   let tmrt = tmrtLongwaveK - 273.15;
 
   tmrt += calculateShortwaveDeltaMRT(d, altRad, params, sunPos.azimuth);
