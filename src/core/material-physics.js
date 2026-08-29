@@ -329,6 +329,11 @@ export function computeMaterialTemperatures(epwData) {
   });
 }
 
+const THERMAL_MASS_MAX_SUBSTEPS = 36000;
+
+const MAX_PASSES = 6;
+const CONVERGENCE_TOL_C = 0.05;
+
 export function computeThermalMass1D(epwData) {
   const N = 10;
 
@@ -354,18 +359,23 @@ export function computeThermalMass1D(epwData) {
   const dt_max_cond = (dx * dx) / (2 * alpha_diff);
   const dt_max_conv = 1 / ((2 * alpha_diff / (dx * dx)) + (2 * h_max / (density * specificHeat * dx)));
 
-  let dt = Math.min(dt_max_cond, dt_max_conv) * 0.75;
+  const dt_stable = Math.min(dt_max_cond, dt_max_conv) * 0.75;
+  const M_required = Math.ceil(3600 / dt_stable);
 
-  let M = Math.ceil(3600 / dt);
-  if (M > 36000) M = 36000;
-  dt = 3600 / M;
+  epwData.thermalMassIsLumped = M_required > THERMAL_MASS_MAX_SUBSTEPS;
 
-  let T = new Array(N).fill(20);
+  if (epwData.thermalMassIsLumped) {
+    runThermalMassLumped(epwData, { thickness, density, specificHeat, N });
+    return;
+  }
+
+  const M = M_required;
+  const dt = 3600 / M;
+
   const Tin_bnd = 22;
   const hin = 8.3;
+  let T = new Array(N).fill(20);
 
-  const MAX_PASSES = 6;
-  const CONVERGENCE_TOL_C = 0.05;
   let prevPassEndT = null;
   let converged = false;
 
@@ -410,5 +420,44 @@ export function computeThermalMass1D(epwData) {
 
   if (!converged) {
     console.warn(`[material-physics] computeThermalMass1D: periodic steady-state not reached within ${MAX_PASSES} passes (tolerance ${CONVERGENCE_TOL_C} deg C). Results reflect the best available approximation but may retain some initial-condition drift for very thick/dense materials.`);
+  }
+}
+
+function runThermalMassLumped(epwData, { thickness, density, specificHeat, N }) {
+  const Tin_bnd = 22;
+  const hin = 8.3;
+  const C = density * specificHeat * thickness;
+
+  let Tlump = 20;
+  let prevPassEndT = null;
+  let converged = false;
+
+  for (let pass = 0; pass < MAX_PASSES; pass++) {
+    epwData.data.forEach(d => {
+      const Tsa = d.ma_TSurf;
+      const hout = getExternalConvectionCoefficient(d.windSpeed);
+      const k = (hout + hin) / C;
+      const Teq = (hout * Tsa + hin * Tin_bnd) / (hout + hin);
+
+      Tlump = Teq + (Tlump - Teq) * Math.exp(-k * 3600);
+
+      if (pass >= 1) {
+        d.ma_TOutMass = Tlump;
+        d.ma_TInMass = Tlump;
+        d.ma_TMassNodes = new Array(N).fill(Tlump);
+      }
+    });
+
+    if (pass >= 1) {
+      if (prevPassEndT !== null && Math.abs(Tlump - prevPassEndT) < CONVERGENCE_TOL_C) {
+        converged = true;
+      }
+      prevPassEndT = Tlump;
+      if (converged) break;
+    }
+  }
+
+  if (!converged) {
+    console.warn(`[material-physics] computeThermalMass1D (lumped model): periodic steady-state not reached within ${MAX_PASSES} passes (tolerance ${CONVERGENCE_TOL_C} deg C).`);
   }
 }

@@ -355,7 +355,7 @@ function renderMASidebar(panelSelector, epwData) {
   if (isMass) {
     infoNote.html(`
         <li class="mb-2"><strong>1D Explicit Finite Difference:</strong> The material thickness is discretized into 10 nodes, and conduction between them is advanced forward in time with an explicit central-difference scheme. Each hourly EPW record is internally subdivided into a number of shorter sub-steps (not just one step per hour) so the temperature field can respond smoothly within the hour rather than jumping discretely between hourly values.</li>
-        <li class="mb-2"><strong>Dynamic Stability Control:</strong> Explicit schemes are only stable below a maximum time step that depends on the material's thickness, density, specific heat and conductivity, as well as the exterior convective coefficient. The simulation computes this limit automatically for the selected material and wind conditions, applies a safety margin, and derives the number of sub-steps per hour from it, so the scheme stays numerically stable without the user needing to set anything manually.</li>
+        <li class="mb-2"><strong>Dynamic Stability Control:</strong> Explicit schemes are only stable below a maximum time step that depends on the material's thickness, density, specific heat and conductivity, as well as the exterior convective coefficient. The simulation computes this limit automatically for the selected material and wind conditions, applies a safety margin, and derives the number of sub-steps per hour from it, so the scheme stays numerically stable without the user needing to set anything manually. For materials thin and conductive enough that this would require an impractically large number of sub-steps (for example, thin sheet metal), the material is instead modeled as a single lumped thermal mass, an exact, unconditionally stable simplification that is accurate precisely because such materials have no meaningful internal temperature gradient to resolve.</li>
         <li class="mb-2"><strong>Boundary Conditions:</strong> The exterior node exchanges heat with the sol-air temperature through the convective coefficient described above; the interior node exchanges heat with a fixed indoor air temperature of 22°C through a constant indoor film coefficient of 8.3 W/m²K, a typical still-air value rather than a value derived from an actual room or HVAC model. The interior side is therefore a simplified boundary, not a full building energy simulation.</li>
         <li class="mb-2"><strong>Solar Geometry & Incidence:</strong> Sun position (altitude and azimuth) is computed for each timestamp from the file's latitude and longitude. The angle of incidence on the tilted surface then combines direct beam radiation (using the cosine of the incidence angle, only when the sun is above the horizon and facing the surface), sky diffuse radiation (an isotropic sky model weighted by the surface's view factor to the sky, adjustable via the SVF parameter), and ground-reflected radiation (estimated from the surface's view factor to the ground and the configured ground albedo).</li>
         <li class="mb-2"><strong>External Convective Coefficient:</strong> Calculated with the McAdams (1954) correlation, using separate roughness parameters for smooth and rough surfaces as reviewed in Mirsadeghi et al. (2013). The weather file's 10 m wind speed is used directly as the model's reference wind speed, a simplification also used by some building energy simulation programs; the actual wind speed at the surface can differ notably from this value.</li>
@@ -419,6 +419,22 @@ function updateMAChartArea(epwData) {
     d3.select('#thermal-mass-chart').style('display', 'block');
     crossSectionContainer.style('display', 'block');
     heatFluxContainer.style('display', 'block');
+
+    let lumpedNotice = d3.select('#thermal-mass-lumped-notice');
+    if (lumpedNotice.empty()) {
+      const kpiNode = d3.select('#thermal-mass-kpis').node();
+      const wrapper = document.createElement('div');
+      wrapper.id = 'thermal-mass-lumped-notice';
+      kpiNode.parentNode.insertBefore(wrapper, kpiNode);
+      lumpedNotice = d3.select('#thermal-mass-lumped-notice');
+    }
+    lumpedNotice.html('');
+    if (epwData.thermalMassIsLumped) {
+      lumpedNotice.append('div')
+        .attr('class', 'alert alert-info py-2 px-3 mb-3')
+        .style('font-size', '12px')
+        .html('<strong>Note:</strong> this material is thin and conductive enough that internal temperature gradients are negligible over an hourly time step. It is modeled as a single lumped thermal mass rather than resolved across 10 internal nodes.');
+    }
 
     renderThermalMassKPICards('#thermal-mass-kpis', epwData);
     renderThermalMassDiurnalChart('#thermal-mass-chart', epwData);

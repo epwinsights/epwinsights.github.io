@@ -113,4 +113,52 @@ describe('Material Physics & Thermal Mass', () => {
     expect(result.ma_TInMass).toBeDefined();
     expect(result.ma_TMassNodes.length).toBe(10);
   });
+
+  it('should fall back to the lumped-capacitance model for thermally-thin materials (e.g. thin sheet metal), where the explicit scheme would need more than 36,000 sub-steps/hour to stay stable', () => {
+    state.maState = {
+      ...state.maState,
+      thickness: thermalMassPresets.f08_metal_surface.thickness,
+      density: thermalMassPresets.f08_metal_surface.density,
+      specificHeat: thermalMassPresets.f08_metal_surface.specificHeat,
+      conductivity: thermalMassPresets.f08_metal_surface.conductivity
+    };
+
+    const mockEpwData = {
+      metadata: { location: { latitude: 35.68, longitude: 51.32 } },
+      data: Array.from({ length: 48 }, (_, h) => ({
+        datetime: new Date(2026, 5, 21, h % 24, 0),
+        dryBulbTemperature: 20 + 10 * Math.sin((2 * Math.PI * h) / 24),
+        windSpeed: 2 + 3 * Math.abs(Math.sin(h)),
+        ma_TSurf: 20 + 10 * Math.sin((2 * Math.PI * h) / 24)
+      }))
+    };
+
+    computeThermalMass1D(mockEpwData);
+
+    expect(mockEpwData.thermalMassIsLumped).toBe(true);
+
+    const result = mockEpwData.data[30];
+    expect(Number.isNaN(result.ma_TOutMass)).toBe(false);
+    expect(result.ma_TOutMass).toBe(result.ma_TInMass);
+    expect(result.ma_TMassNodes.every(t => t === result.ma_TOutMass)).toBe(true);
+  });
+
+  it('should still use the explicit finite-difference scheme (not the lumped fallback) for a normal-thickness material like brick', () => {
+    const mockEpwData = {
+      metadata: { location: { latitude: 35.68, longitude: 51.32 } },
+      data: Array.from({ length: 48 }, (_, h) => ({
+        datetime: new Date(2026, 5, 21, h % 24, 0),
+        dryBulbTemperature: 20 + 10 * Math.sin((2 * Math.PI * h) / 24),
+        windSpeed: 2 + 3 * Math.abs(Math.sin(h)),
+        ma_TSurf: 20 + 10 * Math.sin((2 * Math.PI * h) / 24)
+      }))
+    };
+
+    computeThermalMass1D(mockEpwData);
+
+    expect(mockEpwData.thermalMassIsLumped).toBe(false);
+
+    const result = mockEpwData.data[30];
+    expect(result.ma_TOutMass).not.toBe(result.ma_TInMass);
+  });
 });
