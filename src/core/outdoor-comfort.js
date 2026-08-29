@@ -156,7 +156,7 @@ export function getFp(altDeg, sharpDeg, posture) {
 export function getGroundSurfaceTemperature(d, altRad, groundAlpha, groundEps, svf) {
   const ta = d.dryBulbTemperature;
 
-  const tSkyK = getEffectiveSkyTemperatureK(ta, d.dewPointTemperature, d.horizontalInfraredRadiationIntensity);
+  const tSkyK = getEffectiveSkyTemperatureK(ta, d.dewPointTemperature, d.horizontalInfraredRadiationIntensity, d.opaqueSkyCover);
 
   let groundDirect = d.directNormalRadiation;
   if (state.urbanContext.enabled) {
@@ -242,7 +242,7 @@ export function calculateAdvancedMRT(d, metadata, params) {
 
   const svf = state.urbanContext.enabled ? state.urbanContext.svf : 1.0;
 
-  const tSkyK = getEffectiveSkyTemperatureK(ta, d.dewPointTemperature, d.horizontalInfraredRadiationIntensity);
+  const tSkyK = getEffectiveSkyTemperatureK(ta, d.dewPointTemperature, d.horizontalInfraredRadiationIntensity, d.opaqueSkyCover);
 
   const groundAlpha = state.urbanContext.groundAlpha;
   const groundEps = state.urbanContext.groundEps;

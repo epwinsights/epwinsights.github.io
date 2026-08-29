@@ -47,7 +47,7 @@ live project source, so results always reflect what actually ships.
 | MRT (SolarCal core) | `validate_mrt_c4.mjs` | ASHRAE 55-2023 Table C4-1 (26 rows, seated/standing), transcribed directly from the standard's own published table | `epwinsights_mrt_c4_validation.csv` | `epwinsights_mrt_c4_validation_rerun.csv` |
 | MRT (ground surface temperature) | `validate_ground_temp_plausibility.mjs` | No reference standard; a plausibility check, not a validation (see below and "Known limitations") | `epwinsights_14city_peak_ghi_window.csv` | `epwinsights_ground_temp_plausibility.csv` |
 | MRT (ground surface temperature, linearization error) | `validate_ground_temp_linearization.mjs` | No reference standard; quantifies the error introduced by the earliest closed form linearization (longwave loss evaluated at air temperature) against the current linearized radiative coefficient (h_r) solve (Walton 1983; ASHRAE 1993 Fundamentals; McClellan and Pedersen 1997), not a validation against an outside source | `epwinsights_14city_peak_ghi_window.csv` | `epwinsights_ground_temp_linearization_error.csv` |
-| MRT (ground surface temperature, h_r solve accuracy) | `validate_hr_linearization_accuracy.mjs` | No outside reference source; checks the h_r solve itself against an independent bisection solution of the exact, unlinearized energy balance, across 60,480 synthetic air temperature / wind / surface / radiation / sky-view-factor combinations | none (synthetic grid, generated in script) | `epwinsights_hr_linearization_accuracy.csv`, `epwinsights_hr_linearization_worst_cases.csv` |
+| MRT (ground surface temperature, h_r solve accuracy) | `validate_hr_linearization_accuracy.mjs` | No outside reference source; checks the h_r solve itself against an independent bisection solution of the exact, unlinearized energy balance, across 241,920 synthetic air temperature / wind / surface / radiation / sky-view-factor / opaque-sky-cover combinations | none (synthetic grid, generated in script) | `epwinsights_hr_linearization_accuracy.csv`, `epwinsights_hr_linearization_by_skycover.csv`, `epwinsights_hr_linearization_worst_cases.csv` |
 | MRT (SHARP-averaging sensitivity) | `validate_sharp_sensitivity.mjs` | No reference standard; a sensitivity analysis, not a validation (see below) | `epwinsights_14city_peak_ghi_window.csv` | `epwinsights_sharp_sensitivity.csv` |
 
 ### How to run
@@ -386,20 +386,22 @@ have.
 
 | Wind band | Surface | n | Mean error (C) | Max error (C) |
 |---|---|---|---|---|
-| Calm (<=1 m/s) | Light (alpha<=0.35) | 10368 | 0.000010 | 0.000103 |
-| Calm (<=1 m/s) | Medium (0.35<alpha<=0.65) | 5184 | 0.000022 | 0.000161 |
-| Calm (<=1 m/s) | Dark (alpha>0.65) | 10368 | 0.000033 | 0.000234 |
-| Moderate (1-5 m/s) | Light (alpha<=0.35) | 6912 | 0.000003 | 0.000041 |
-| Moderate (1-5 m/s) | Medium (0.35<alpha<=0.65) | 3456 | 0.000007 | 0.000068 |
-| Moderate (1-5 m/s) | Dark (alpha>0.65) | 6912 | 0.000008 | 0.000099 |
-| Windy (>5 m/s) | Light (alpha<=0.35) | 6912 | 0.000001 | 0.000013 |
-| Windy (>5 m/s) | Medium (0.35<alpha<=0.65) | 3456 | 0.000001 | 0.000012 |
-| Windy (>5 m/s) | Dark (alpha>0.65) | 6912 | 0.000001 | 0.000012 |
+| Calm (<=1 m/s) | Light (alpha<=0.35) | 41472 | 0.000009 | 0.000109 |
+| Calm (<=1 m/s) | Medium (0.35<alpha<=0.65) | 20736 | 0.000021 | 0.000163 |
+| Calm (<=1 m/s) | Dark (alpha>0.65) | 41472 | 0.000032 | 0.000235 |
+| Moderate (1-5 m/s) | Light (alpha<=0.35) | 27648 | 0.000003 | 0.000041 |
+| Moderate (1-5 m/s) | Medium (0.35<alpha<=0.65) | 13824 | 0.000006 | 0.000068 |
+| Moderate (1-5 m/s) | Dark (alpha>0.65) | 27648 | 0.000007 | 0.000099 |
+| Windy (>5 m/s) | Light (alpha<=0.35) | 27648 | 0.000001 | 0.000013 |
+| Windy (>5 m/s) | Medium (0.35<alpha<=0.65) | 13824 | 0.000001 | 0.000012 |
+| Windy (>5 m/s) | Dark (alpha>0.65) | 27648 | 0.000001 | 0.000012 |
 
-The largest error across all 60,480 combinations is 0.000234 C (calm
+The largest error across all 241,920 combinations is 0.000235 C (calm
 wind, dark surface, at the coldest/driest/highest-radiation corner of the
-grid), converging in 12 iterations or fewer everywhere. Error grows with
-lower wind and darker surfaces, matching where h_r itself changes most
+grid), converging in 12 iterations or fewer everywhere, cross-checked
+with an independent iteration counter against the real production
+function. Error grows with lower wind and darker surfaces, matching
+where h_r itself changes most
 between iterations, but stays several orders of magnitude below the
 0.01 C precision the rest of this validation targets, even at
 combinations well outside what real EPW files produce.
@@ -455,8 +457,9 @@ orientation a way to obtain the exact value rather than the averaged one.
   reference standard, and is not numerically validated against an
   independent dataset here. Sky temperature is derived from EPW horizontal
   infrared radiation via the Stefan Boltzmann law (falling back to a
-  Clark and Allen 1978 dew-point-based clear-sky estimate when that field
-  is unavailable), blended with ground temperature via Sky View Factor.
+  Clark and Allen 1978 dew-point-based estimate, adjusted for opaque sky
+  cover following Walton 1983, when that field is unavailable), blended
+  with ground temperature via Sky View Factor.
 - Ground surface temperature is estimated with a sol-air temperature model
   (ASHRAE Fundamentals, McAdams 1954 convection coefficient), driven by a
   user-selectable ground surface material, rather than assumed equal to
@@ -1755,6 +1758,7 @@ validation/
         epwinsights_ground_temp_linearization_error.csv
         epwinsights_ground_temp_plausibility.csv
         epwinsights_hr_linearization_accuracy.csv
+        epwinsights_hr_linearization_by_skycover.csv        
         epwinsights_hr_linearization_worst_cases.csv
         epwinsights_morphing_hdd_diagnostic.txt
         epwinsights_hdd_cdd_paired.csv

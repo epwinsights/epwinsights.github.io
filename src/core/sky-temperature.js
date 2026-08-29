@@ -13,15 +13,18 @@ const SIGMA = 5.67e-8;
 // Preferred source: direct Stefan-Boltzmann inversion of the EPW file's own measured
 // horizontal infrared radiation intensity, when available and non-zero.
 //
-// Fallback (Clark and Allen, 1978): a clear-sky emissivity correlation from dew-point
-// temperature, applied when horizontal IR is missing or zero. Clamped to an emissivity
-// of 1.0 as a numerical safeguard, since the correlation can exceed unity at very high
-// dew points.
+// Fallback (Walton 1983, Eq. B.3.3, building on Clark and Allen 1978): a clear-sky
+// emissivity correlation from dew-point temperature, multiplied by an opaque-sky-cover
+// correction (tenths, 0-10) so cloudy conditions are represented rather than assumed
+// clear. Applied when horizontal IR is missing or zero. The combined emissivity is
+// clamped to 1.0 as a numerical safeguard (not part of Walton's original formula),
+// since the correlation can exceed unity at very high dew points and/or heavy cloud
+// cover.
 //
 // This function is the single shared sky-temperature model for the project; both
 // outdoor-comfort.js (pedestrian MRT) and material-physics.js (building/ground surface
 // temperature) call it, so the two modules never diverge on this assumption.
-export function getEffectiveSkyTemperatureK(dryBulbC, dewPointC, horizontalInfraredRadiationIntensity) {
+export function getEffectiveSkyTemperatureK(dryBulbC, dewPointC, horizontalInfraredRadiationIntensity, opaqueSkyCover) {
   const tAirK = dryBulbC + 273.15;
 
   const irHoriz = horizontalInfraredRadiationIntensity;
@@ -30,8 +33,11 @@ export function getEffectiveSkyTemperatureK(dryBulbC, dewPointC, horizontalInfra
   }
 
   const tDewK = dewPointC + 273.15;
-  const epsSkyClear = Math.min(1.0, 0.787 + 0.764 * Math.log(tDewK / 273));
-  return tAirK * Math.pow(epsSkyClear, 0.25);
+  const epsSkyClear = 0.787 + 0.764 * Math.log(tDewK / 273);
+  const n = opaqueSkyCover || 0;
+  const cloudFactor = 1 + 0.0224 * n - 0.0035 * n * n + 0.00028 * n * n * n;
+  const epsSky = Math.min(1.0, epsSkyClear * cloudFactor);
+  return tAirK * Math.pow(epsSky, 0.25);
 }
 
 // Steady-state sol-air surface temperature, solved with the linearized radiative
@@ -72,13 +78,14 @@ export function getEffectiveSkyTemperatureK(dryBulbC, dewPointC, horizontalInfra
 // is a smooth, weakly-varying function of T_surf near the true solution (it enters only
 // through the coefficient, not through the residual directly, unlike the earlier plain
 // fixed-point loop), this converges in a handful of iterations across the full range of
-// conditions the platform produces: an independent 60,480-scenario stress test (air
+// conditions the platform produces: an independent 241,920-scenario stress test (air
 // temperature -15 to 50 C, dew-point depression up to 45 C, wind 0 to 15 m/s, alpha
 // 0.15 to 0.97, eps 0.85 to 0.98, incident radiation 0 to 1300 W/m2, sky view factor
-// 0.2 to 1.0), checked against an independent bisection solve of the exact residual,
-// found a maximum of 12 iterations to reach the 0.001 C tolerance below, and a maximum
-// error of 0.000234 C against the bisection reference (see
-// validate_hr_linearization_accuracy.mjs for the full grid and per-condition summary).
+// 0.2 to 1.0, opaque sky cover 0 to 10 tenths), checked against an independent bisection
+// solve of the exact residual, found a maximum of 12 iterations to reach the 0.001 C
+// tolerance below, and a maximum error of 0.000235 C against the bisection reference
+// (see validate_hr_linearization_accuracy.mjs for the full grid and per-condition
+// summary).
 // A hard maxIterations cap is kept as a safety net for any input this analysis did not
 // anticipate; if it is ever hit, a console warning is emitted so the condition is
 // visible rather than silently wrong.

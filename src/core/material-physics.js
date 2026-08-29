@@ -316,7 +316,7 @@ export function computeMaterialTemperatures(epwData) {
 
     const tAir = d.dryBulbTemperature;
 
-    const tSkyK = getEffectiveSkyTemperatureK(tAir, d.dewPointTemperature, d.horizontalInfraredRadiationIntensity);
+    const tSkyK = getEffectiveSkyTemperatureK(tAir, d.dewPointTemperature, d.horizontalInfraredRadiationIntensity, d.opaqueSkyCover);
 
     const ho = getExternalConvectionCoefficient(d.windSpeed);
     const viewFactor = ((1 + Math.cos(tiltRad)) / 2) * state.maState.svf;
