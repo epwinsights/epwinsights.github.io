@@ -15,8 +15,8 @@ authors:
     given-names: Ehsan
     orcid: "https://orcid.org/0009-0009-4513-5260"
     website: "https://ehsan-rostami.github.io"
-version: 1.0.0
-date-released: "2026-08-20"
+version: 1.0.1
+date-released: "2026-08-31"
 repository-code: "https://github.com/epwinsights/epwinsights.github.io"
 url: "https://epwinsights.github.io"
 license: AGPL-3.0-or-later
